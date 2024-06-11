@@ -3,12 +3,12 @@
 using namespace std;
 
 #include <MinimalSocket/udp/UdpSocket.h>
-#include "stringutils.h"
-#include "types.h"
-#include "parsemessages.h"
-#include "tictoc.h"
-#include <chrono>
-#include <thread>
+// #include "stringutils.h"
+// #include "types.h"
+// #include "parsemessages.h"
+// #include "tictoc.h"
+// #include <chrono>
+// #include <thread>
 
 // main with two args
 int main(int argc, char *argv[])
@@ -21,16 +21,16 @@ int main(int argc, char *argv[])
     }
 
     // get the team name and the port
-    string team_name = argv[1];
-    MinimalSocket::Port this_socket_port = std::stoi(argv[2]);
+    string team_name = argv[1];                                                                                    //Almacenamos el nombre del equipo
+    MinimalSocket::Port this_socket_port = std::stoi(argv[2]);                                                     //puerto local de escucha del socket
 
     cout << "Creating a UDP socket" << endl;
 
-    MinimalSocket::udp::Udp<true> udp_socket(this_socket_port, MinimalSocket::AddressFamily::IP_V6);
+    MinimalSocket::udp::Udp<true> udp_socket(this_socket_port, MinimalSocket::AddressFamily::IP_V6);               //Establece la conexion con el puerto tipo UDP (Crea el objeto MinimalSocket)
 
-    cout << "Socket created" << endl;
+    cout << "Socket Player preated" << endl;
 
-    bool success = udp_socket.open();
+    bool success = udp_socket.open();                                                                              //Abre el socket creado para la comunicación y enlaza el puerto especificado
 
     if (!success)
     {
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    MinimalSocket::Address other_recipient_udp = MinimalSocket::Address{"127.0.0.1", 6000};
+    MinimalSocket::Address other_recipient_udp = MinimalSocket::Address{"127.0.0.1", 6000};                        //Mandas un mensaje al puerto 6000 y recibes la direccion de puerto nueva del servidor             
     cout << "(init " + team_name + "(version 19))";
 
     udp_socket.sendTo("(init " + team_name + "(version 19))", other_recipient_udp);
@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
 
     std::size_t message_max_size = 1000;
     cout << "Waiting for a message" << endl;
+
     auto received_message = udp_socket.receive(message_max_size);
     std::string received_message_content = received_message->received_message;
 
@@ -53,7 +54,10 @@ int main(int argc, char *argv[])
     MinimalSocket::Address other_sender_udp = received_message->sender;
     MinimalSocket::Address server_udp = MinimalSocket::Address{"127.0.0.1", other_sender_udp.getPort()};
 
-
+    Player player;
+    player = Parser::parseInitialMessage(received_message_content, player);
+    cout << player << endl;
+    sendInitialMoveMessage(player, udp_socket, server_udp);
 
 
 
@@ -98,7 +102,7 @@ int main(int argc, char *argv[])
         // PROCESS MESSAGES
         do
         {
-            auto received_message = udp_socket.receive(message_max_size);
+            auto received_message = udp_socket.receive(message_max_size); //AQUI SE ESCUCHA LO QUE RECIBIMOS DEL SOCKET 
             std::string received_message_content = received_message->received_message;
             try
             {
