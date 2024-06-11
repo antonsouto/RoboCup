@@ -54,10 +54,12 @@ int main(int argc, char *argv[])
     MinimalSocket::Address other_sender_udp = received_message->sender;
     MinimalSocket::Address server_udp = MinimalSocket::Address{"127.0.0.1", other_sender_udp.getPort()};
 
-    Player player;
-    player = Parser::parseInitialMessage(received_message_content, player);
-    cout << player << endl;
-    sendInitialMoveMessage(player, udp_socket, server_udp);
+    cout << received_message_content << endl; 
+
+    // Player player;
+    // player = Parser::parseInitialMessage(received_message_content, player);
+    // cout << player << endl;
+    // sendInitialMoveMessage(player, udp_socket, server_udp);
 
 
 
