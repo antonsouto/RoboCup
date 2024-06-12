@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     MinimalSocket::Address other_recipient_udp = MinimalSocket::Address{"127.0.0.1", 6000};                         //Mandas un mensaje al puerto 6000 y recibes la direccion de puerto nueva del servidor             
     cout << "(init " + team_name + "(version 19))";
 
-    if(argc==3){
+    if(argv[2]=="goalie"){
         udp_socket.sendTo("(init " + team_name + "(version 19) (goalie))", other_recipient_udp);
     }else{
         udp_socket.sendTo("(init " + team_name + "(version 19))", other_recipient_udp);
