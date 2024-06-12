@@ -13,7 +13,7 @@
 int main(int argc, char *argv[])
 {
     // check if the number of arguments is correct
-    if (argc != 2)
+    if (argc != 3)
     {
         cout << "Usage: " << argv[0] << " <team-name> <this-port>" << endl;
         return 1;
@@ -46,7 +46,12 @@ int main(int argc, char *argv[])
     MinimalSocket::Address other_recipient_udp = MinimalSocket::Address{"127.0.0.1", 6000};                         //Mandas un mensaje al puerto 6000 y recibes la direccion de puerto nueva del servidor             
     cout << "(init " + team_name + "(version 19))";
 
-    udp_socket.sendTo("(init " + team_name + "(version 19))", other_recipient_udp);
+    if(argc==3){
+        udp_socket.sendTo("(init " + team_name + "(version 19) (goalie))", other_recipient_udp);
+    }else{
+        udp_socket.sendTo("(init " + team_name + "(version 19))", other_recipient_udp);
+    }
+    
     cout << "Init Message sent" << endl;
 
     std::size_t message_max_size = 1000;
@@ -72,6 +77,16 @@ int main(int argc, char *argv[])
         cout<<inicioJugador<<endl;
     }
 
+
+
+    while(true){
+        auto received_message = udp_socket.receive(message_max_size);
+    }
+
+    // Player player;
+    // player = Parser::parseInitialMessage(received_message_content, player);
+    // cout << player << endl;
+    // sendInitialMoveMessage(player, udp_socket, server_udp);
 
 
 
@@ -122,7 +137,10 @@ int main(int argc, char *argv[])
             {
                 player = Parser::parseSeverMessage(received_message_content, player);
             }
-            catch (const std::exception &e)
+            catch (const std    // Player player;
+    // player = Parser::parseInitialMessage(received_message_content, player);
+    // cout << player << endl;
+    // sendInitialMoveMessage(player, udp_socket, server_udp);::exception &e)
             {
                 cout << e.what() << endl;
             }
