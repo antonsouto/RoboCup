@@ -11,10 +11,10 @@ using namespace std;
 // devuelve un string con el mensaje de posicion para este jugador, por ejemplo (move -35 28)
 
 string inicializoJugador(const string &respuesta){
-    vector<string>vrespuesta = separarPalabras(respuesta);
+    vector<string>vrespuesta = separarPalabras(respuesta); 
     string mensaje; //mensaje que se le envia al servidor para que instancie los jugadores en sus posiciones iniciales
 
-    if(vrespuesta[2]=="1"){
+    if(vrespuesta[2]=="1"){ //(init l 1 before_kick_off)
         mensaje ="(move -51 0)";
     }else if(vrespuesta[2]=="2"){
         mensaje ="(move -35 -28)";

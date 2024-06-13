@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 
     cout << "Creating a UDP socket" << endl;
 
-    MinimalSocket::udp::Udp<true> udp_socket(this_socket_port, MinimalSocket::AddressFamily::IP_V6);                //Establece la conexion con el puerto tipo UDP (Crea el objeto MinimalSocket)
+    MinimalSocket::udp:Jugador="jugador":Udp<true> udp_socket(this_socket_port, MinimalSocket::AddressFamily::IP_V6);                //Establece la conexion con el puerto tipo UDP (Crea el objeto MinimalSocket)
 
     cout << "Socket Player preated" << endl;
 
@@ -64,17 +64,14 @@ int main(int argc, char *argv[])
     MinimalSocket::Address other_sender_udp = received_message->sender;
     MinimalSocket::Address server_udp = MinimalSocket::Address{"127.0.0.1", other_sender_udp.getPort()};            //getPort() retorna el nuevo puerto de comunicacion del servidor
 
-    cout<<"llego hasta aqui"<<endl;
+    
     //cout << received_message_content << endl;                                                                     //string que devuelve el servidor cuando se conecta un cliente
     if(received_message_content == "(error no_more_team_or_player_or_goalie)"){
         cout<<"\nEl equipo está completo o ya existe un portero para el mismo\n";
         return -1;
     }else{
-        cout<<"llego hasta aqui 2"<<endl;
         string inicioJugador = inicializoJugador(received_message_content);
-        cout<<"llego hasta aqui 3"<<endl;
         udp_socket.sendTo(inicioJugador,server_udp);
-        cout<<inicioJugador<<endl;
     }
 
 
