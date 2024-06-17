@@ -2,19 +2,26 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build active file",
             "type": "shell",
-            "command": "cmake",
+            "command": "/usr/bin/g++",
             "args": [
-                "--build",
-                "${workspaceFolder}/build"
+                "-g",
+                "${workspaceFolder}/main.cpp",
+                "${workspaceFolder}/colocarjugadores.cpp",
+                "${workspaceFolder}/stringutilities.cpp",
+                "-I${workspaceFolder}/Minimal-Socket/src/header", // Ruta a los encabezados
+                "-L${workspaceFolder}/Minimal-Socket/build/src", // Ruta a las bibliotecas compiladas
+                "-lMinimalSocket",
+                "-o",
+                "${workspaceFolder}/main"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
             "problemMatcher": ["$gcc"],
-            "detail": "Tarea generada por el usuario para construir el proyecto usando CMake"
+            "detail": "Tarea generada por el usuario para compilar el archivo activo"
         }
     ]
 }

@@ -1,7 +1,7 @@
-#include<iostream>
-#include"colocarjugadores.h"
-#include <MinimalSocket/udp/UdpSocket.h>
-#include<random>
+#include <iostream>
+#include "colocarjugadores.h"
+#include "Minimal-Socket/src/header/MinimalSocket/udp/UdpSocket.h"
+#include <random>
 // #include "stringutils.h"
 // #include "types.h"
 // #include "parsemessages.h"
@@ -20,22 +20,21 @@ int main(int argc, char *argv[])
     }
 
     // get the team name and creating a random number for the local port
-    string team_name = argv[1];                                                                                     //Almacenamos el nombre del equipo
+    string team_name = argv[1]; // Almacenamos el nombre del equipo
     random_device r;
     mt19937 gen(r());
-    std::uniform_int_distribution<>distribucion(6000,10000);
-    //Genero el puerto aleatorio
+    std::uniform_int_distribution<> distribucion(6000, 10000);
+    // Genero el puerto aleatorio
     int puerto_local_aleatorio = distribucion(gen);
-    MinimalSocket::Port this_socket_port = puerto_local_aleatorio;                                                  //puerto local de escucha del socket
-
+    MinimalSocket::Port this_socket_port = puerto_local_aleatorio; // puerto local de escucha del socket
 
     cout << "Creating a UDP socket" << endl;
 
-    MinimalSocket::udp::Udp<true> udp_socket(this_socket_port, MinimalSocket::AddressFamily::IP_V6);                //Establece la conexion con el puerto tipo UDP (Crea el objeto MinimalSocket)
+    MinimalSocket::udp::Udp<true> udp_socket(this_socket_port, MinimalSocket::AddressFamily::IP_V6); // Establece la conexion con el puerto tipo UDP (Crea el objeto MinimalSocket)
 
     cout << "Socket Player preated" << endl;
 
-    bool success = udp_socket.open();                                                                               //Abre el socket creado para la comunicación y enlaza el puerto especificado
+    bool success = udp_socket.open(); // Abre el socket creado para la comunicación y enlaza el puerto especificado
 
     if (!success)
     {
@@ -43,15 +42,18 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    MinimalSocket::Address other_recipient_udp = MinimalSocket::Address{"127.0.0.1", 6000};                         //Mandas un mensaje al puerto 6000 y recibes la direccion de puerto nueva del servidor             
+    MinimalSocket::Address other_recipient_udp = MinimalSocket::Address{"127.0.0.1", 6000}; // Mandas un mensaje al puerto 6000 y recibes la direccion de puerto nueva del servidor
     cout << "(init " + team_name + "(version 19))";
 
-    if(argv[2]=="goalie"){
+    if (argv[2] == "goalie")
+    {
         udp_socket.sendTo("(init " + team_name + "(version 19) (goalie))", other_recipient_udp);
-    }else{
+    }
+    else
+    {
         udp_socket.sendTo("(init " + team_name + "(version 19))", other_recipient_udp);
     }
-    
+
     cout << "Init Message sent" << endl;
 
     std::size_t message_max_size = 1000;
@@ -62,26 +64,25 @@ int main(int argc, char *argv[])
 
     // update upd port to provided by the other udp
     MinimalSocket::Address other_sender_udp = received_message->sender;
-    MinimalSocket::Address server_udp = MinimalSocket::Address{"127.0.0.1", other_sender_udp.getPort()};            //getPort() retorna el nuevo puerto de comunicacion del servidor
+    MinimalSocket::Address server_udp = MinimalSocket::Address{"127.0.0.1", other_sender_udp.getPort()}; // getPort() retorna el nuevo puerto de comunicacion del servidor
 
-    
-    //cout << received_message_content << endl;                                                                     //string que devuelve el servidor cuando se conecta un cliente
-    if(received_message_content == "(error no_more_team_or_player_or_goalie)"){
-        cout<<"\nEl equipo está completo o ya existe un portero para el mismo\n";
+    // cout << received_message_content << endl;                                                                     //string que devuelve el servidor cuando se conecta un cliente
+    if (received_message_content == "(error no_more_team_or_player_or_goalie)")
+    {
+        cout << "\nEl equipo está completo o ya existe un portero para el mismo\n";
         return -1;
-    }else{
+    }
+    else
+    {
         string inicioJugador = inicializoJugador(received_message_content);
-        udp_socket.sendTo(inicioJugador,server_udp);
+        udp_socket.sendTo(inicioJugador, server_udp);
     }
 
-
-
-    while(true){
+    while (true)
+    {
         auto received_message = udp_socket.receive(message_max_size);
         string received_message_content = received_message->received_message;
-        cout<<received_message_content<<endl;
-        
-    
+        cout << received_message_content << endl;
     }
 
     /*
@@ -98,7 +99,7 @@ int main(int argc, char *argv[])
         // PROCESS MESSAGES
         do
         {
-            auto received_message = udp_socket.receive(message_max_size); //AQUI SE ESCUCHA LO QUE RECIBIMOS DEL SOCKET 
+            auto received_message = udp_socket.receive(message_max_size); //AQUI SE ESCUCHA LO QUE RECIBIMOS DEL SOCKET
             std::string received_message_content = received_message->received_message;
             try
             {
