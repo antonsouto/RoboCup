@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 
     cout << "Creating a UDP socket" << endl;
 
-    MinimalSocket::udp:Jugador="jugador":Udp<true> udp_socket(this_socket_port, MinimalSocket::AddressFamily::IP_V6);                //Establece la conexion con el puerto tipo UDP (Crea el objeto MinimalSocket)
+    MinimalSocket::udp::Udp<true> udp_socket(this_socket_port, MinimalSocket::AddressFamily::IP_V6);                //Establece la conexion con el puerto tipo UDP (Crea el objeto MinimalSocket)
 
     cout << "Socket Player preated" << endl;
 
@@ -78,41 +78,11 @@ int main(int argc, char *argv[])
 
     while(true){
         auto received_message = udp_socket.receive(message_max_size);
+        string received_message_content = received_message->received_message;
+        cout<<received_message_content<<endl;
+        
+    
     }
-
-    // Player player;
-    // player = Parser::parseInitialMessage(received_message_content, player);
-    // cout << player << endl;
-    // sendInitialMoveMessage(player, udp_socket, server_udp);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /*
     Player player;

@@ -1,0 +1,39 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "GDB",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/player",
+            "args": ["VodkaJuniorsA", "goalie"], // Ajusta estos argumentos según sea necesario
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build",
+            "miDebuggerPath": "/usr/bin/gdb", // Ajusta la ruta a GDB si es necesario
+            "logging": {
+                "trace": true,
+                "traceResponse": true,
+                "engineLogging": true,
+                "programOutput": true,
+                "exceptions": true
+            },
+            "customLaunchSetupCommands": [
+                {
+                    "description": "Load the symbol file",
+                    "text": "symbol-file ${workspaceFolder}/build/player"
+                }
+            ]
+        }
+    ]
+}

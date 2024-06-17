@@ -1,5 +1,22 @@
 {
     "files.associations": {
-        "ostream": "cpp"
+        "*.cpp": "cpp",
+        "*.h": "cpp",
+        "iostream": "cpp",
+        "*.tcc": "cpp",
+        "fstream": "cpp"
+    },
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cmake.configureOnOpen": true,
+    "cmake.generator": "Unix Makefiles",
+    "cmake.sourceDirectory": "${workspaceFolder}",
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.buildArgs": [
+        "--target",
+        "player"
+    ],
+    "cmake.configureSettings": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+        "CMAKE_BUILD_TYPE": "Debug"
     }
 }
