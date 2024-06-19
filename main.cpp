@@ -1,5 +1,6 @@
 #include <iostream>
 #include "colocarjugadores.h"
+#include "funciones_de_juego.h"
 #include "Minimal-Socket/src/header/MinimalSocket/udp/UdpSocket.h"
 #include <random>
 #include <fstream>
@@ -88,87 +89,8 @@ int main(int argc, char *argv[])
         auto received_message = udp_socket.receive(message_max_size);
         string received_message_content = received_message->received_message;
         // Prefijo a buscar
-        std::string prefix = "(hear";
-        std::string prefix2 = "(see";
-        // Verificar si la cadena comienza con el prefijo
-        if (received_message_content.compare(0, prefix.size(), prefix) == 0)
-        {
-            if ((received_message_content.find("play_on") != -1) || (received_message_content.find("kick_off_l") != -1))
-            {
-                enJuego = true;
-            }
-        }
-        if (received_message_content.compare(0, prefix2.size(), prefix2) == 0 && enJuego)
-        {
-            if (received_message_content.find("(b)") != -1)
-            {
-                auto balon = buscarValores(received_message_content, "((b)");
-                // Aquí se procesan los valores de "(b)" en "balon"
-                for (const auto &par : balon)
-                {
-                    std::cout << "Valor 1: " << par.first << ", Valor 2: " << par.second << std::endl;
-                    if (stoi(par.first) < 0.6)
-                    {
-
-                        if (ladoJugador == "l")
-                        {
-                            if (received_message_content.find("(f c)") != -1)
-                            {
-                                auto porteria = buscarValores(received_message_content, "((f c)");
-                                for (const auto &lugar : porteria)
-                                {
-                                    udp_socket.sendTo("(kick 100 " + lugar.second + ")", server_udp);
-                                }
-                            }
-                            else if ((received_message_content.find("(g r)") != -1))
-                            {
-                                auto centro = buscarValores(received_message_content, "((g r)");
-                                for (const auto &lugar : centro)
-                                {
-                                    udp_socket.sendTo("(kick 100 " + lugar.second + ")", server_udp);
-                                }
-                            }
-                            else if ((received_message_content.find("(f c)") == -1) && (received_message_content.find("(g r)") == -1))
-                            {
-                                udp_socket.sendTo("(dash 100 30)", server_udp);
-                            }
-                        }
-                        else
-                        {
-                            if (received_message_content.find("(g l)") != -1)
-                            {
-                                auto porteria = buscarValores(received_message_content, "((g l)");
-                                for (const auto &lugar : porteria)
-                                {
-                                    udp_socket.sendTo("(kick 100 " + lugar.second + ")", server_udp);
-                                }
-                            }
-                            else if ((received_message_content.find("(f c)") != -1))
-                            {
-                                auto centro = buscarValores(received_message_content, "((f c)");
-                                for (const auto &lugar : centro)
-                                {
-                                    udp_socket.sendTo("(kick 100 " + lugar.second + ")", server_udp);
-                                }
-                            }
-                            else if ((received_message_content.find("(f c)") == -1) && (received_message_content.find("(g l)") == -1))
-                            {
-                                udp_socket.sendTo("(dash 100 25)", server_udp);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        udp_socket.sendTo("(dash 100 " + par.second + ")", server_udp);
-                    }
-                    // Aquí puedes realizar otras operaciones con los valores extraídos
-                }
-            }
-            else if (received_message_content.find("(b)") == -1)
-            {
-                udp_socket.sendTo("(turn 80)", server_udp);
-            }
-        }
+        string resultado = procesado(received_message_content, ladoJugador);
+        udp_socket.sendTo(resultado, server_udp);
     }
 
     /*

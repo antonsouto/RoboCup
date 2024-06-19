@@ -30,6 +30,8 @@ set(SOURCE_FILES
     stringutilities.cpp
     colocarjugadores.h
     colocarjugadores.cpp
+    funciones_de_juego.h
+    funciones_de_juego.cpp
 )
 
 add_executable(player ${SOURCE_FILES})
