@@ -112,17 +112,17 @@ int main(int argc, char *argv[])
 
                         if (ladoJugador == "l")
                         {
-                            if (received_message_content.find("(g r)") != -1)
+                            if (received_message_content.find("(f c)") != -1)
                             {
-                                auto porteria = buscarValores(received_message_content, "((g r)");
+                                auto porteria = buscarValores(received_message_content, "((f c)");
                                 for (const auto &lugar : porteria)
                                 {
                                     udp_socket.sendTo("(kick 100 " + lugar.second + ")", server_udp);
                                 }
                             }
-                            else if ((received_message_content.find("(f c)") != -1))
+                            else if ((received_message_content.find("(g r)") != -1))
                             {
-                                auto centro = buscarValores(received_message_content, "((f c)");
+                                auto centro = buscarValores(received_message_content, "((g r)");
                                 for (const auto &lugar : centro)
                                 {
                                     udp_socket.sendTo("(kick 100 " + lugar.second + ")", server_udp);
@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
                             }
                             else if ((received_message_content.find("(f c)") == -1) && (received_message_content.find("(g r)") == -1))
                             {
-                                udp_socket.sendTo("(turn 80)", server_udp);
+                                udp_socket.sendTo("(dash 100 30)", server_udp);
                             }
                         }
                         else
@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
                             }
                             else if ((received_message_content.find("(f c)") == -1) && (received_message_content.find("(g l)") == -1))
                             {
-                                udp_socket.sendTo("(turn 80)", server_udp);
+                                udp_socket.sendTo("(dash 100 25)", server_udp);
                             }
                         }
                     }
