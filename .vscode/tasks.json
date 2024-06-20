@@ -10,6 +10,7 @@
                 "${workspaceFolder}/main.cpp",
                 "${workspaceFolder}/colocarjugadores.cpp",
                 "${workspaceFolder}/stringutilities.cpp",
+                "${workspaceFolder}/funciones_de_juego.cpp",
                 "-I${workspaceFolder}/Minimal-Socket/src/header", // Ruta a los encabezados
                 "-L${workspaceFolder}/Minimal-Socket/build/src", // Ruta a las bibliotecas compiladas
                 "-lMinimalSocket",
