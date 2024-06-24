@@ -103,9 +103,13 @@ vector<string> separarParentesis(const string &p)
     return resultado;
 }
 
-std::vector<std::pair<std::string, std::string>> buscarValores(const std::string &input, const std::string &inicio)
+pair<string, string> buscarValores(const std::string &input, const std::string &inicio)
 {
-    std::vector<std::pair<std::string, std::string>> resultados;
+    if (input.find(inicio) == string::npos)
+    {
+        return {"-1", "-1"};
+    }
+
     std::string fin = ")";
     size_t inicio_len = inicio.length();
 
@@ -126,12 +130,12 @@ std::vector<std::pair<std::string, std::string>> buscarValores(const std::string
         // Asegurarse de que hay suficientes palabras
         if (palabras.size() >= 2)
         {
-            resultados.emplace_back(palabras[1], palabras[2]);
+            return {palabras[0], palabras[1]};
         }
 
         // Avanzar la posición para buscar la siguiente ocurrencia del prefijo
         pos = input.find(inicio, end_pos);
     }
 
-    return resultados;
+    return {"-1", "-1"};
 }

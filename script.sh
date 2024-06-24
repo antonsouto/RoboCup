@@ -1,10 +1,9 @@
 #!/bin/bash
 
-
-#Ejecutable
+# Ejecutable
 EJECUTABLE="./build/player"
 
-# Valor de texto que deseas pasar como parametro al main
+# Valor de texto que deseas pasar como parámetro al main
 EquipoA="VodkaJuniorsA"
 EquipoB="VodkaJuniorsB"
 Portero="goalie"
@@ -15,13 +14,11 @@ for ((i=1; i<=11; i++))
 do
     if [ $i -eq 1 ]; then
         # En la primera ejecución, ejecutar el comando con el portero
-        gnome-terminal -- bash -c "$EJECUTABLE $EquipoA $Portero; exec bash"
-        gnome-terminal -- bash -c "$EJECUTABLE $EquipoB $Portero; exec bash"
+        xterm -hold -e "$EJECUTABLE $EquipoA $Portero" &
+        xterm -hold -e "$EJECUTABLE $EquipoB $Portero" &
     else
         # Para las demás ejecuciones, ejecutar el comando sin el portero
-        gnome-terminal -- bash -c "$EJECUTABLE $EquipoA $Jugador; exec bash"
-        gnome-terminal -- bash -c "$EJECUTABLE $EquipoB $Jugador; exec bash"
+        xterm -hold -e "$EJECUTABLE $EquipoA $Jugador" &
+        xterm -hold -e "$EJECUTABLE $EquipoB $Jugador" &
     fi
 done
-
-

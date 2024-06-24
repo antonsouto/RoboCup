@@ -31,65 +31,71 @@ string Ver(string received_message_content, string ladoJugador)
     {
         auto balon = buscarValores(received_message_content, "((b)");
         // Aquí se procesan los valores de "(b)" en "balon"
-        for (const auto &par : balon)
-        {
-            std::cout << "Valor 1: " << par.first << ", Valor 2: " << par.second << std::endl;
-            if (stoi(par.first) < 0.6)
-            {
 
-                if (ladoJugador == "l")
-                { // Ve el balon y la porteria de la dcha
-                    if (received_message_content.find("(g r)") != -1)
-                    {
-                        auto porteria = buscarValores(received_message_content, "((g r)");
-                        for (const auto &lugar : porteria)
-                        {
-                            return resultado = "(kick 100 " + lugar.second + ")";
-                        }
-                    } // Ve el balon y el centro del campo
-                    else if ((received_message_content.find("(f c)") != -1))
-                    {
-                        auto centro = buscarValores(received_message_content, "((f c)");
-                        for (const auto &lugar : centro)
-                        {
-                            return resultado = "(kick 100 " + lugar.second + ")";
-                        }
-                    } ////Ve el balon pero no ve ni la porteria de la dcha ni el centro del campo
-                    else if ((received_message_content.find("(f c)") == -1) && (received_message_content.find("(g r)") == -1))
-                    {
-                        return resultado = "(dash 100 30)";
-                    }
-                }
-                else
+        // std::cout << "Valor 1: " << par.first << ", Valor 2: " << par.second << std::endl;
+        if (stoi(balon.first) < 0.6)
+        {
+
+            if (ladoJugador == "l")
+            { // Ve el balon y la porteria de la dcha
+                if (received_message_content.find("(g r)") != -1)
                 {
-                    if (received_message_content.find("(g l)") != -1)
-                    { // Ve el balon y la porteria de la izq
-                        auto porteria = buscarValores(received_message_content, "((g l)");
-                        for (const auto &lugar : porteria)
-                        {
-                            return resultado = "(kick 100 " + lugar.second + ")";
-                        }
-                    } // Ve el balon y el centro del campo
-                    else if ((received_message_content.find("(f c)") != -1))
-                    {
-                        auto centro = buscarValores(received_message_content, "((f c)");
-                        for (const auto &lugar : centro)
-                        {
-                            return resultado = "(kick 100 " + lugar.second + ")";
-                        }
-                    } // Ve el balon pero no ve ni la porteria de la izq ni el centro del campo
-                    else if ((received_message_content.find("(f c)") == -1) && (received_message_content.find("(g l)") == -1))
-                    {
-                        return resultado = "(dash 100 30)";
-                    }
+                    auto porteria = buscarValores(received_message_content, "((g r)");
+                    return resultado = "(kick 100 " + porteria.second + ")";
+
+                } // Ve el balon y el centro del campo
+                else if ((received_message_content.find("(f c)") != -1))
+                {
+                    auto centro = buscarValores(received_message_content, "((f c)");
+                    return resultado = "(kick 100 " + centro.second + ")";
+
+                } ////Ve el balon pero no ve ni la porteria de la dcha ni el centro del campo
+                else if ((received_message_content.find("(f c)") == -1) && (received_message_content.find("(g r)") == -1))
+                {
+                    return resultado = "(dash 100 30)";
                 }
             }
-            else // Cuando ve la pelota y esta lejos
+            else
             {
-                return resultado = "(dash 100 " + par.second + ")";
+                if (received_message_content.find("(g l)") != -1)
+                { // Ve el balon y la porteria de la izq
+                    auto porteria = buscarValores(received_message_content, "((g l)");
+                    return resultado = "(kick 100 " + porteria.second + ")";
+
+                } // Ve el balon y el centro del campo
+                else if ((received_message_content.find("(f c)") != -1))
+                {
+                    auto centro = buscarValores(received_message_content, "((f c)");
+                    return resultado = "(kick 100 " + centro.second + ")";
+
+                } // Ve el balon pero no ve ni la porteria de la izq ni el centro del campo
+                else if ((received_message_content.find("(f c)") == -1) && (received_message_content.find("(g l)") == -1))
+                {
+                    return resultado = "(dash 100 30)";
+                }
             }
-            // Aquí puedes realizar otras operaciones con los valores extraídos
+            return resultado = "(dash 100 " + balon.second + ")";
         }
+        else // Cuando ve la pelota y esta lejos
+        {
+            if (stoi(balon.first) > 80)
+            {
+                return resultado = "(turn " + balon.second + ")";
+            }
+            else if (stoi(balon.first) > 60)
+            {
+                return resultado = "(dash 20 " + balon.second + ")";
+            }
+            else if (stoi(balon.first) > 40)
+            {
+                return resultado = "(dash 50 " + balon.second + ")";
+            }
+            else if (stoi(balon.first) > 20)
+            {
+                return resultado = "(dash 80 " + balon.second + ")";
+            }
+        }
+        // Aquí puedes realizar otras operaciones con los valores extraídos
     }
     else if (received_message_content.find("(b)") == -1) // Cuando no ve el balon
     {
