@@ -32,6 +32,8 @@ set(SOURCE_FILES
     colocarjugadores.cpp
     funciones_de_juego.h
     funciones_de_juego.cpp
+    calculocoordenadas.cpp
+    tictoc.cpp
 )
 
 add_executable(player ${SOURCE_FILES})

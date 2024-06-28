@@ -10,7 +10,7 @@ Portero="goalie"
 Jugador="jugador"
 
 # Bucle para abrir 10 terminales y ejecutar main en cada una
-for ((i=1; i<=11; i++))
+for ((i=1; i<=2; i++))
 do
     if [ $i -eq 1 ]; then
         # En la primera ejecución, ejecutar el comando con el portero

@@ -8,9 +8,11 @@
 #include "stringutilities.h"
 #include <chrono>
 #include <thread>
+#include "calculocoordenadas.h"
 
 using namespace std;
 bool enJuego = false;
+struct visioncampo micontainer;
 
 bool Escuchar(string received_message_content, string ladoJugador)
 {
@@ -26,6 +28,8 @@ string Ver(string received_message_content, string ladoJugador)
 {
 
     string resultado;
+    pair<float, float> coordenadas = rellenaContenedor(micontainer, received_message_content);
+    cout << "\n\t Mis coordenadas en este momento son : " << coordenadas.first << " " << coordenadas.second << endl;
 
     if (received_message_content.find("(b)") != -1)
     {

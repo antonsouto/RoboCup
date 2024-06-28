@@ -7,6 +7,7 @@
 #include "stringutilities.h"
 #include <chrono>
 #include <thread>
+#include "tictoc.h"
 // #include "stringutils.h"
 // #include "types.h"
 // #include "parsemessages.h"
@@ -83,17 +84,25 @@ int main(int argc, char *argv[])
         string inicioJugador = inicializoJugador(received_message_content);
         udp_socket.sendTo(inicioJugador, server_udp);
     }
+
+    //---------------------------------------------------------------------------------------------------------------------EMPIEZA LA RUTINA DE JUEGO (BUCLE)
+
     bool enJuego = false;
+    TicToc clock;
+    clock.tic();
     while (true)
     {
-        auto received_message = udp_socket.receive(message_max_size);
-        if (stoi(numerojugador) != 1)
+
+        do
         {
+            auto received_message = udp_socket.receive(message_max_size);
             string received_message_content = received_message->received_message;
             // Prefijo a buscar
             string resultado = procesado(received_message_content, ladoJugador);
             udp_socket.sendTo(resultado, server_udp);
-        }
+        } while (!received_message_content.find("(see") == std::string::npos || clock.toc() > 100);
+
+        clock.tic();
     }
 
     /*
