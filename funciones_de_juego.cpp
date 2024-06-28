@@ -28,7 +28,7 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
 {
 
     string resultado;
-    pair<float, float> coordenadas = rellenaContenedor(micontainer, received_message_content); // POR QUE COJONES AQUI SOLO ENTRA UNA VEZ
+    pair<float, float> coordenadas = rellenaContenedor(micontainer, received_message_content);
     cout << "\n\t Mis coordenadas en este momento son : " << coordenadas.first << " " << coordenadas.second << endl;
 
     if (received_message_content.find("(b) ") != -1)
@@ -80,7 +80,7 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             }
             return resultado = "(dash 100 " + balon.second + ")";
         }
-        else if (zonaJuego(numerojugadorvisto, ladoJugador, rellenaContenedor(micontainer, received_message_content)) == true) // Cuando ve la pelota y esta lejos
+        else if (zonaJuego(numerojugadorvisto, ladoJugador, coordenadas)) // Cuando ve la pelota y esta lejos
         {
             if (stoi(balon.first) > 80)
             {
@@ -102,6 +102,10 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             {
                 return resultado = "(dash 100 " + balon.second + ")";
             }
+        }
+        else
+        {
+            return resultado = "(dash 0 " + balon.second + ")";
         }
         // Aquí puedes realizar otras operaciones con los valores extraídos
     }
@@ -136,43 +140,43 @@ bool zonaJuego(string numerojugador, string lado, pair<float, float> coordenadas
 
     if (numerojugador == "1")
     {
-        return ((x <= 51 || x >= 37) && (y < 19));
+        return ((37 <= x <= 51) && (y < 19));
     }
     else if (numerojugador == "2" || numerojugador == "5")
     {
-        return ((y < 33 || y > 25));
+        return ((25 <= y <= 33));
     }
     else if (numerojugador == "3" || numerojugador == "4")
     {
-        return ((x <= 51 || x >= 25) && (y < 25 || y >= 0));
+        return ((25 <= x <= 51) && (0 <= y <= 25));
     }
     else if ((numerojugador == "6" || numerojugador == "8"))
     {
-        return ((x <= 40 || x >= 10) && (y < 25 || y >= 0));
+        return ((10 <= x <= 40) && (0 <= y <= 25));
     }
     else if ((numerojugador == "7" || numerojugador == "11") && (lado == "l"))
     {
-        return ((coordenadas.first <= 40 || coordenadas.first >= -10) && (y < 33 || y >= 5));
+        return ((-10 <= coordenadas.first <= 40) && (5 <= y <= 33));
     }
     else if ((numerojugador == "7" || numerojugador == "11") && (lado == "r"))
     {
-        return ((coordenadas.first >= -40 || coordenadas.first <= 10) && (y < 33 || y >= 5));
+        return ((10 >= coordenadas.first >= -40) && (5 <= y < 33));
     }
     else if ((numerojugador == "10") && (lado == "l"))
     {
-        return ((coordenadas.first <= 40 || coordenadas.first >= -25) && (y < 25 || y >= 0));
+        return ((-25 <= coordenadas.first <= 40) && (0 <= y <= 25));
     }
     else if ((numerojugador == "10") && (lado == "r"))
     {
-        return ((coordenadas.first >= -40 || coordenadas.first <= 25) && (y < 25 || y >= 0));
+        return ((25 >= coordenadas.first >= -40) && (0 <= y < 25));
     }
     else if ((numerojugador == "9") && (lado == "l"))
     {
-        return ((coordenadas.first <= 50 || coordenadas.first >= -15) && (y < 25 || y >= 0));
+        return ((-15 >= coordenadas.first <= 50) && (0 <= y <= 25));
     }
     else if ((numerojugador == "9") && (lado == "r"))
     {
-        return ((coordenadas.first >= -50 || coordenadas.first <= 15) && (y < 25 || y >= 0));
+        return ((15 >= coordenadas.first >= -50) && (0 <= y < 25));
     }
     else
     {

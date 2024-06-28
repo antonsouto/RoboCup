@@ -93,16 +93,11 @@ int main(int argc, char *argv[])
     while (true)
     {
 
-        do
-        {
-            auto received_message = udp_socket.receive(message_max_size);
-            string received_message_content = received_message->received_message;
-            // Prefijo a buscar
-            string resultado = procesado(received_message_content, ladoJugador, numerojugador);
-            udp_socket.sendTo(resultado, server_udp);
-        } while (!received_message_content.find("(see") == std::string::npos || clock.toc() < 100);
-
-        clock.tic();
+        auto received_message = udp_socket.receive(message_max_size);
+        string received_message_content = received_message->received_message;
+        // Prefijo a buscar
+        string resultado = procesado(received_message_content, ladoJugador, numerojugador);
+        udp_socket.sendTo(resultado, server_udp);
     }
 
     /*
