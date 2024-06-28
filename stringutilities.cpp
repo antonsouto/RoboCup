@@ -3,8 +3,18 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <algorithm>
+#include <cctype>
 
 using namespace std;
+
+std::string trim_left(const std::string &str)
+{
+    std::string result = str;
+    result.erase(result.begin(), std::find_if(result.begin(), result.end(), [](unsigned char ch)
+                                              { return !std::isspace(ch); }));
+    return result;
+}
 
 vector<string> separarPalabras(const string &palabra)
 {
@@ -125,8 +135,8 @@ pair<string, string> buscarValores(const std::string &input, const std::string &
 
         // Extraer la subcadena que contiene los valores
         std::string subcadena = input.substr(pos + inicio_len, end_pos - (pos + inicio_len));
+        // subcadena = trim_left(subcadena);
         auto palabras = separarPalabras(subcadena);
-
         // Asegurarse de que hay suficientes palabras
         if (palabras.size() >= 2)
         {

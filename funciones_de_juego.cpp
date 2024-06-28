@@ -24,16 +24,16 @@ bool Escuchar(string received_message_content, string ladoJugador)
         return false;
 }
 
-string Ver(string received_message_content, string ladoJugador)
+string Ver(string received_message_content, string ladoJugador, string numerojugadorvisto)
 {
 
     string resultado;
-    pair<float, float> coordenadas = rellenaContenedor(micontainer, received_message_content);
+    pair<float, float> coordenadas = rellenaContenedor(micontainer, received_message_content); // POR QUE COJONES AQUI SOLO ENTRA UNA VEZ
     cout << "\n\t Mis coordenadas en este momento son : " << coordenadas.first << " " << coordenadas.second << endl;
 
-    if (received_message_content.find("(b)") != -1)
+    if (received_message_content.find("(b) ") != -1)
     {
-        auto balon = buscarValores(received_message_content, "((b)");
+        auto balon = buscarValores(received_message_content, "((b) ");
         // Aquí se procesan los valores de "(b)" en "balon"
 
         // std::cout << "Valor 1: " << par.first << ", Valor 2: " << par.second << std::endl;
@@ -42,45 +42,45 @@ string Ver(string received_message_content, string ladoJugador)
 
             if (ladoJugador == "l")
             { // Ve el balon y la porteria de la dcha
-                if (received_message_content.find("(g r)") != -1)
+                if (received_message_content.find("(g r) ") != -1)
                 {
-                    auto porteria = buscarValores(received_message_content, "((g r)");
+                    auto porteria = buscarValores(received_message_content, "((g r) ");
                     return resultado = "(kick 100 " + porteria.second + ")";
 
                 } // Ve el balon y el centro del campo
-                else if ((received_message_content.find("(f c)") != -1))
+                else if ((received_message_content.find("(f c) ") != -1))
                 {
-                    auto centro = buscarValores(received_message_content, "((f c)");
+                    auto centro = buscarValores(received_message_content, "((f c) ");
                     return resultado = "(kick 100 " + centro.second + ")";
 
                 } ////Ve el balon pero no ve ni la porteria de la dcha ni el centro del campo
-                else if ((received_message_content.find("(f c)") == -1) && (received_message_content.find("(g r)") == -1))
+                else if ((received_message_content.find("(f c) ") == -1) && (received_message_content.find("(g r) ") == -1))
                 {
                     return resultado = "(dash 100 30)";
                 }
             }
             else
             {
-                if (received_message_content.find("(g l)") != -1)
+                if (received_message_content.find("(g l) ") != -1)
                 { // Ve el balon y la porteria de la izq
-                    auto porteria = buscarValores(received_message_content, "((g l)");
+                    auto porteria = buscarValores(received_message_content, "((g l) ");
                     return resultado = "(kick 100 " + porteria.second + ")";
 
                 } // Ve el balon y el centro del campo
-                else if ((received_message_content.find("(f c)") != -1))
+                else if ((received_message_content.find("(f c) ") != -1))
                 {
-                    auto centro = buscarValores(received_message_content, "((f c)");
+                    auto centro = buscarValores(received_message_content, "((f c) ");
                     return resultado = "(kick 100 " + centro.second + ")";
 
                 } // Ve el balon pero no ve ni la porteria de la izq ni el centro del campo
-                else if ((received_message_content.find("(f c)") == -1) && (received_message_content.find("(g l)") == -1))
+                else if ((received_message_content.find("(f c) ") == -1) && (received_message_content.find("(g l) ") == -1))
                 {
                     return resultado = "(dash 100 30)";
                 }
             }
             return resultado = "(dash 100 " + balon.second + ")";
         }
-        else // Cuando ve la pelota y esta lejos
+        else if (zonaJuego(numerojugadorvisto, ladoJugador, rellenaContenedor(micontainer, received_message_content)) == true) // Cuando ve la pelota y esta lejos
         {
             if (stoi(balon.first) > 80)
             {
@@ -98,17 +98,21 @@ string Ver(string received_message_content, string ladoJugador)
             {
                 return resultado = "(dash 80 " + balon.second + ")";
             }
+            else
+            {
+                return resultado = "(dash 100 " + balon.second + ")";
+            }
         }
         // Aquí puedes realizar otras operaciones con los valores extraídos
     }
-    else if (received_message_content.find("(b)") == -1) // Cuando no ve el balon
+    else if (received_message_content.find("(b) ") == -1) // Cuando no ve el balon
     {
         return resultado = "(turn 80)";
     }
     return resultado;
 }
 
-string procesado(string received_message_content, string ladoJugador)
+string procesado(string received_message_content, string ladoJugador, string numero)
 {
     std::string prefix = "(hear";
     std::string prefix2 = "(see";
@@ -120,7 +124,58 @@ string procesado(string received_message_content, string ladoJugador)
     }
     if (received_message_content.compare(0, prefix2.size(), prefix2) == 0 && enJuego)
     {
-        return resultado = Ver(received_message_content, ladoJugador);
+        return resultado = Ver(received_message_content, ladoJugador, numero);
     }
     return resultado;
+}
+
+bool zonaJuego(string numerojugador, string lado, pair<float, float> coordenadas)
+{
+    float x = abs(coordenadas.first);
+    float y = abs(coordenadas.second);
+
+    if (numerojugador == "1")
+    {
+        return ((x <= 51 || x >= 37) && (y < 19));
+    }
+    else if (numerojugador == "2" || numerojugador == "5")
+    {
+        return ((y < 33 || y > 25));
+    }
+    else if (numerojugador == "3" || numerojugador == "4")
+    {
+        return ((x <= 51 || x >= 25) && (y < 25 || y >= 0));
+    }
+    else if ((numerojugador == "6" || numerojugador == "8"))
+    {
+        return ((x <= 40 || x >= 10) && (y < 25 || y >= 0));
+    }
+    else if ((numerojugador == "7" || numerojugador == "11") && (lado == "l"))
+    {
+        return ((coordenadas.first <= 40 || coordenadas.first >= -10) && (y < 33 || y >= 5));
+    }
+    else if ((numerojugador == "7" || numerojugador == "11") && (lado == "r"))
+    {
+        return ((coordenadas.first >= -40 || coordenadas.first <= 10) && (y < 33 || y >= 5));
+    }
+    else if ((numerojugador == "10") && (lado == "l"))
+    {
+        return ((coordenadas.first <= 40 || coordenadas.first >= -25) && (y < 25 || y >= 0));
+    }
+    else if ((numerojugador == "10") && (lado == "r"))
+    {
+        return ((coordenadas.first >= -40 || coordenadas.first <= 25) && (y < 25 || y >= 0));
+    }
+    else if ((numerojugador == "9") && (lado == "l"))
+    {
+        return ((coordenadas.first <= 50 || coordenadas.first >= -15) && (y < 25 || y >= 0));
+    }
+    else if ((numerojugador == "9") && (lado == "r"))
+    {
+        return ((coordenadas.first >= -50 || coordenadas.first <= 15) && (y < 25 || y >= 0));
+    }
+    else
+    {
+        return false;
+    }
 }

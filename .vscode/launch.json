@@ -5,8 +5,8 @@
             "name": "g++ build and debug active file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": ["equipoA", "goalie"], // Ajusta estos argumentos según sea necesario
+            "program": "${workspaceFolder}/main",
+            "args": ["equipoA", "jugador"], // Ajusta estos argumentos según sea necesario
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
