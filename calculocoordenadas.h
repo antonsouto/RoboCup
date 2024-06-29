@@ -86,4 +86,10 @@ vector<pair<string, pair<float, float>>> buscarMenores(vector<pair<string, vp>> 
 
 // pair<string, string> buscarValores(const std::string &input, const std::string &inicio);
 
-pair<float, float> rellenaContenedor(visioncampo &container, const string &p);
+pair<pair<float, float>, float> rellenaContenedor(visioncampo &container, const string &p);
+
+// Devuelve la congruencia de un ángulo
+float congruencia_2pi(double angulo);
+
+// Devuelve el angulo a partir de las coordenadas del jugador y las de un flag, junto con el ángulo que forma la mirada del jugador con el flag
+float calcularAngulo(vector<pair<string, pair<float, float>>> const &flags, vector<pair<string, vp>> const &absolutas);

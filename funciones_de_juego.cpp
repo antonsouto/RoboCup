@@ -28,8 +28,8 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
 {
 
     string resultado;
-    pair<float, float> coordenadas = rellenaContenedor(micontainer, received_message_content);
-    cout << "\n\t Mis coordenadas en este momento son : " << coordenadas.first << " " << coordenadas.second << endl;
+    pair<pair<float, float>, float> coordenadas = rellenaContenedor(micontainer, received_message_content);
+    cout << "\n\t Mis coordenadas en este momento son : " << coordenadas.first.first << " " << coordenadas.first.second << " mirando con un angulo absoluto : " << coordenadas.second << endl;
     if (received_message_content.find("(b) ") != -1)
     {
         auto balon = buscarValores(received_message_content, "((b) ");
@@ -47,7 +47,7 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                 } // Ve el balon y el centro del campo
                 else if ((received_message_content.find("(f c) ") != -1))
                 {
-                    if (coordenadas.first < 0)
+                    if (coordenadas.first.first < 0)
                     { // solo dispara al centro si esta en el lado izquierdo del campo
                         auto centro = buscarValores(received_message_content, "((f c) ");
                         return resultado = "(kick 100 " + centro.second + ")";
@@ -69,7 +69,7 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                 } // Ve el balon y el centro del campo
                 else if ((received_message_content.find("(f c) ") != -1))
                 {
-                    if (coordenadas.second > 0)
+                    if (coordenadas.first.second > 0)
                     { // solo dispara al centro si esta en el lado derecho del campo
                         auto centro = buscarValores(received_message_content, "((f c) ");
                         return resultado = "(kick 100 " + centro.second + ")";
@@ -83,7 +83,7 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             }
             return resultado = "(dash 100 " + balon.second + ")";
         }
-        else if (zonaJuego(numerojugador, ladoJugador, coordenadas)) // Cuando ve la pelota y esta lejos
+        else if (zonaJuego(numerojugador, ladoJugador, coordenadas.first)) // Cuando ve la pelota y esta lejos
         {
 
             if (stoi(balon.first) > 70)
@@ -107,7 +107,7 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                 return resultado = "(dash 100 " + balon.second + ")";
             }
         }
-        else if (zonaJuego(numerojugador, ladoJugador, coordenadas)) // cuando no esta dentro de la zona
+        else if (zonaJuego(numerojugador, ladoJugador, coordenadas.first)) // cuando no esta dentro de la zona
         {
             if (numerojugador == "1")
             {
