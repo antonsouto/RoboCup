@@ -9,6 +9,7 @@
 #include <chrono>
 #include <thread>
 #include "calculocoordenadas.h"
+#include <sstream>
 
 using namespace std;
 bool enJuego = false;
@@ -107,11 +108,12 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                 return resultado = "(dash 100 " + balon.second + ")";
             }
         }
-        else if (zonaJuego(numerojugador, ladoJugador, coordenadas.first)) // cuando no esta dentro de la zona
+        else if (!zonaJuego(numerojugador, ladoJugador, coordenadas.first)) // cuando no esta dentro de la zona
         {
-            if (numerojugador == "1")
+            if (numerojugador == "1" && ladoJugador == "l")
             {
-                return resultado = "(dash 80 180)";
+                auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -50, 0, coordenadas.second);
+                return resultado = "(dash 100 " + giro + ")";
             }
             else if (numerojugador == "2" || numerojugador == "5")
             {
@@ -226,4 +228,57 @@ bool zonaJuego(string numerojugador, string lado, pair<float, float> coordenadas
     {
         return false;
     }
+}
+
+string calculoangulogiro(float x, float y, float xgiro, float ygiro, float angulojugador)
+{
+    float angulogiro;
+    float beta = atan((ygiro - y) / (xgiro - x));
+    beta = beta * 180 / M_PI;
+
+    if (xgiro > x)
+    {
+        if (beta > 0)
+        {
+            angulogiro = angulojugador + beta;
+            if (angulogiro > 180)
+            {
+                angulogiro = angulogiro - 360;
+            }
+        }
+        else
+        {
+            angulogiro = angulojugador - abs(beta);
+            if (angulogiro > 180)
+            {
+                angulogiro = angulogiro - 360;
+            }
+        }
+    }
+    else
+    {
+        if (beta > 0)
+        {
+            beta = 180 - abs(beta);
+            angulogiro = angulojugador - beta;
+            if (angulogiro > 180)
+            {
+                angulogiro = angulogiro - 360;
+            }
+        }
+        else
+        {
+            beta = abs(beta) + 180;
+            angulogiro = angulojugador - beta;
+            if (angulogiro > 180)
+            {
+                angulogiro = angulogiro - 360;
+            }
+        }
+    }
+
+    ostringstream giro2;
+    giro2 << angulogiro;
+    string giro(giro2.str());
+    return giro;
 }
