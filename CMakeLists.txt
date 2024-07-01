@@ -34,6 +34,8 @@ set(SOURCE_FILES
     funciones_de_juego.cpp
     calculocoordenadas.cpp
     tictoc.cpp
+    RetornoAZona.cpp
+    RetornoAZona.h
 )
 
 add_executable(player ${SOURCE_FILES})
