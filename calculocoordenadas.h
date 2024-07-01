@@ -7,6 +7,7 @@
 #include <string>
 #include <cmath>
 #include "stringutilities.h"
+#include <sstream>
 using namespace std;
 typedef pair<string, string> vp;
 
@@ -93,3 +94,6 @@ float congruencia_2pi(double angulo);
 
 // Devuelve el angulo a partir de las coordenadas del jugador y las de un flag, junto con el ángulo que forma la mirada del jugador con el flag
 float calcularAngulo(vector<pair<string, pair<float, float>>> const &flags, vector<pair<string, vp>> const &absolutas);
+
+// Devuel el angulo entre la direccion de vista del jugador y un punto del campo indicado
+string calculoangulogiro(float x, float y, float xgiro, float ygiro, float angulojugador);

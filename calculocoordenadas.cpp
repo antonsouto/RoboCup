@@ -448,3 +448,56 @@ float calcularAngulo(vector<pair<string, pair<float, float>>> const &flags, vect
     alpha = alpha * 180 / M_PI;
     return alpha;
 }
+
+string calculoangulogiro(float x, float y, float xgiro, float ygiro, float angulojugador)
+{
+    float angulogiro;
+    float beta = atan((ygiro - y) / (xgiro - x));
+    beta = beta * 180 / M_PI;
+
+    if (xgiro > x)
+    {
+        if (beta > 0)
+        {
+            angulogiro = angulojugador + beta;
+            if (angulogiro > 180)
+            {
+                angulogiro = angulogiro - 360;
+            }
+        }
+        else
+        {
+            angulogiro = angulojugador - abs(beta);
+            if (angulogiro > 180)
+            {
+                angulogiro = angulogiro - 360;
+            }
+        }
+    }
+    else
+    {
+        if (beta > 0)
+        {
+            beta = 180 - abs(beta);
+            angulogiro = angulojugador - beta;
+            if (angulogiro > 180)
+            {
+                angulogiro = angulogiro - 360;
+            }
+        }
+        else
+        {
+            beta = abs(beta) + 180;
+            angulogiro = angulojugador - beta;
+            if (angulogiro > 180)
+            {
+                angulogiro = angulogiro - 360;
+            }
+        }
+    }
+
+    ostringstream giro2;
+    giro2 << angulogiro;
+    string giro(giro2.str());
+    return giro;
+}
