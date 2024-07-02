@@ -76,12 +76,12 @@ string retornoazona(string const &numerojugador, string const &ladoJugador, pair
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 50, 0, coordenadas.second);
             return resultado = "(dash 100 " + giro + ")";
         }
-        else if (numerojugador == "2")
+        else if (numerojugador == "5")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 35, -28, coordenadas.second);
             return resultado = "(dash 100 " + giro + ")";
         }
-        else if (numerojugador == "5")
+        else if (numerojugador == "2")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 35, 28, coordenadas.second);
             return resultado = "(dash 100 " + giro + ")";
@@ -106,12 +106,12 @@ string retornoazona(string const &numerojugador, string const &ladoJugador, pair
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 25, -11, coordenadas.second);
             return resultado = "(dash 100 " + giro + ")";
         }
-        else if (numerojugador == "11")
+        else if (numerojugador == "7")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 8, -20, coordenadas.second);
             return resultado = "(dash 100 " + giro + ")";
         }
-        else if (numerojugador == "7")
+        else if (numerojugador == "11")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 8, 20, coordenadas.second);
             return resultado = "(dash 100 " + giro + ")";
@@ -137,11 +137,11 @@ bool zonaJuego(string numerojugador, string lado, pair<float, float> coordenadas
 
     if (numerojugador == "1")
     {
-        return ((37 <= x && x <= 52) && (y < 19));
+        return ((49 <= x && x <= 52) && (y < 7));
     }
     else if (numerojugador == "2" || numerojugador == "5")
     {
-        return ((25 <= y && y <= 33));
+        return ((10 <= y && y <= 33));
     }
     else if (numerojugador == "3" || numerojugador == "4")
     {

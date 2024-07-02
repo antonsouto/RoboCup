@@ -16,14 +16,67 @@ using namespace std;
 bool enJuego = false;
 visioncampo micontainer;
 
+string ColocardeNuevo(string received_message_content, string ladoJugador, string numeroJugador)
+{
+    string mensaje;
+    if (numeroJugador == "1")
+    { //(init l 1 before_kick_off)
+        mensaje = "(move -51 0)";
+    }
+    else if (numeroJugador == "2")
+    {
+        mensaje = "(move -35 -28)";
+    }
+    else if (numeroJugador == "3")
+    {
+        mensaje = "(move -42 -14)";
+    }
+    else if (numeroJugador == "4")
+    {
+        mensaje = "(move -42 14)";
+    }
+    else if (numeroJugador == "5")
+    {
+        mensaje = "(move -35 28)";
+    }
+    else if (numeroJugador == "6")
+    {
+        mensaje = "(move -25 11)";
+    }
+    else if (numeroJugador == "7")
+    {
+        mensaje = "(move -8 20)";
+    }
+    else if (numeroJugador == "8")
+    {
+        mensaje = "(move -25 -11)";
+    }
+    else if (numeroJugador == "9")
+    {
+        mensaje = "(move -5 0)";
+    }
+    else if (numeroJugador == "10")
+    {
+        mensaje = "(move -15 0)";
+    }
+    else if (numeroJugador == "11")
+    {
+        mensaje = "(move -8 -20)";
+    }
+    return mensaje;
+}
+
 bool Escuchar(string received_message_content, string ladoJugador)
 {
-    if ((received_message_content.find("play_on") != -1) || (received_message_content.find("kick_off_l") != -1))
+
+    if ((received_message_content.find("play_on") != -1) || (received_message_content.find("kick_off") != -1))
     {
         return enJuego = true;
     }
-    else
-        return false;
+    else if (received_message_content.find("goal") != -1 || received_message_content.find("before_kick_off") != -1)
+    {
+        return enJuego = false;
+    }
 }
 
 string Ver(string received_message_content, string ladoJugador, string numerojugador)
@@ -31,12 +84,17 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
 
     string resultado;
     pair<pair<float, float>, float> coordenadas = rellenaContenedor(micontainer, received_message_content);
-    cout << "\n\t Mis coordenadas en este momento son : " << coordenadas.first.first << " " << coordenadas.first.second << " mirando con un angulo absoluto : " << coordenadas.second << endl;
+    // cout << "\n\t Mis coordenadas en este momento son : " << coordenadas.first.first << " " << coordenadas.first.second << " mirando con un angulo absoluto : " << coordenadas.second << endl;
     if (received_message_content.find("(b) ") != -1)
     {
         auto balon = buscarValores(received_message_content, "((b) ");
         // Aquí se procesan los valores de "(b)" en "balon"
         // std::cout << "Valor 1: " << par.first << ", Valor 2: " << par.second << std::endl;
+
+        if (stoi(balon.first) >= 0.6 && stoi(balon.first) < 5)
+        {
+            return resultado = "(dash 100 " + balon.second + ")";
+        }
         if (stoi(balon.first) < 0.6)
         {
             if (ladoJugador == "l")
@@ -94,11 +152,11 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             }
             else if (stoi(balon.first) > 60)
             {
-                return resultado = "(dash 20 " + balon.second + ")";
+                return resultado = "(dash 10 " + balon.second + ")";
             }
             else if (stoi(balon.first) > 30)
             {
-                return resultado = "(dash 50 " + balon.second + ")";
+                return resultado = "(dash 30 " + balon.second + ")";
             }
             else if (stoi(balon.first) > 20)
             {
@@ -132,7 +190,11 @@ string procesado(string received_message_content, string ladoJugador, string num
     // Verificar si la cadena comienza con el prefijo
     if (received_message_content.compare(0, prefix.size(), prefix) == 0)
     {
-        bool enJuego = Escuchar(received_message_content, ladoJugador);
+        enJuego = Escuchar(received_message_content, ladoJugador);
+        if (received_message_content.find("goal") != -1)
+        {
+            resultado = ColocardeNuevo(received_message_content, ladoJugador, numero);
+        }
     }
     if (received_message_content.compare(0, prefix2.size(), prefix2) == 0 && enJuego)
     {
