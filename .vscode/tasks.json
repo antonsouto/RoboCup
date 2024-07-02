@@ -13,6 +13,7 @@
                 "${workspaceFolder}/funciones_de_juego.cpp",
                 "${workspaceFolder}/calculocoordenadas.cpp",
                 "${workspaceFolder}/tictoc.cpp",
+                "${workspaceFolder}/RetornoAZona.cpp",
                 "-I${workspaceFolder}/Minimal-Socket/src/header", // Ruta a los encabezados
                 "-L${workspaceFolder}/Minimal-Socket/build/src", // Ruta a las bibliotecas compiladas
                 "-lMinimalSocket",

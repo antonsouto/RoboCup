@@ -11,14 +11,23 @@
 #include "calculocoordenadas.h"
 #include "RetornoAZona.h"
 #include <sstream>
+#include <cmath>
 
 using namespace std;
 bool enJuego = false;
+float xbalon;
+float ybalon;
 visioncampo micontainer;
 
-string ColocardeNuevo(string received_message_content, string ladoJugador, string numeroJugador)
+string ColocardeNuevo(string received_message_content, string ladoJugador, string numeroJugador, int caso, float xbalon = 0, float ybalon = 0)
 {
     string mensaje;
+    ostringstream xbalon2;
+    xbalon2 << xbalon;
+    string x(xbalon2.str());
+    ostringstream ybalon2;
+    ybalon2 << ybalon;
+    string y(ybalon2.str());
     if (numeroJugador == "1")
     { //(init l 1 before_kick_off)
         mensaje = "(move -51 0)";
@@ -51,9 +60,23 @@ string ColocardeNuevo(string received_message_content, string ladoJugador, strin
     {
         mensaje = "(move -25 -11)";
     }
-    else if (numeroJugador == "9")
+    else if (numeroJugador == "9" && caso == 0)
     {
         mensaje = "(move -5 0)";
+    }
+    else if (numeroJugador == "9" && caso == 1)
+    {
+        if (ladoJugador == "l")
+            mensaje = "(move " + x + " " + y + ")";
+        if (ladoJugador == "r")
+            mensaje = "(move -5 0)";
+    }
+    else if (numeroJugador == "9" && caso == 2)
+    {
+        if (ladoJugador == "r")
+            mensaje = "(move " + x + " " + y + ")";
+        if (ladoJugador == "l")
+            mensaje = "(move -5 0)";
     }
     else if (numeroJugador == "10")
     {
@@ -69,7 +92,7 @@ string ColocardeNuevo(string received_message_content, string ladoJugador, strin
 bool Escuchar(string received_message_content, string ladoJugador)
 {
 
-    if ((received_message_content.find("play_on") != -1) || (received_message_content.find("kick_off") != -1))
+    if ((received_message_content.find("play_on") != -1) || (received_message_content.find("kick_off") != -1) || (received_message_content.find("kick_in") != -1))
     {
         return enJuego = true;
     }
@@ -77,6 +100,7 @@ bool Escuchar(string received_message_content, string ladoJugador)
     {
         return enJuego = false;
     }
+    return enJuego;
 }
 
 string Ver(string received_message_content, string ladoJugador, string numerojugador)
@@ -88,6 +112,11 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
     if (received_message_content.find("(b) ") != -1)
     {
         auto balon = buscarValores(received_message_content, "((b) ");
+        float angulobalon = -coordenadas.second + stof(balon.second);
+        angulobalon = angulobalon * M_PI / 180;
+        xbalon = stof(balon.first) * cos(angulobalon) + coordenadas.first.first;
+        ybalon = stof(balon.first) * sin(angulobalon) + coordenadas.first.second;
+        cout << xbalon << " " << ybalon << endl;
         // Aquí se procesan los valores de "(b)" en "balon"
         // std::cout << "Valor 1: " << par.first << ", Valor 2: " << par.second << std::endl;
 
@@ -193,7 +222,15 @@ string procesado(string received_message_content, string ladoJugador, string num
         enJuego = Escuchar(received_message_content, ladoJugador);
         if (received_message_content.find("goal") != -1)
         {
-            resultado = ColocardeNuevo(received_message_content, ladoJugador, numero);
+            resultado = ColocardeNuevo(received_message_content, ladoJugador, numero, 0);
+        }
+        if (received_message_content.find("kick_in_l") != -1)
+        {
+            resultado = ColocardeNuevo(received_message_content, ladoJugador, numero, 1, xbalon, ybalon);
+        }
+        if (received_message_content.find("kick_in_r") != -1)
+        {
+            resultado = ColocardeNuevo(received_message_content, ladoJugador, numero, 2, xbalon, ybalon);
         }
     }
     if (received_message_content.compare(0, prefix2.size(), prefix2) == 0 && enJuego)
