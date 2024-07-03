@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
         auto received_message = udp_socket.receive(message_max_size);
         string received_message_content = received_message->received_message;
         // Prefijo a buscar
-        string resultado = procesado(received_message_content, ladoJugador, numerojugador);
+        string resultado = procesado(received_message_content, ladoJugador, numerojugador,team_name);
         udp_socket.sendTo(resultado, server_udp);
     }
 
