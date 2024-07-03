@@ -251,6 +251,7 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             auto balon = buscarValores(received_message_content, "((b) ");
             auto xybalon = calculoAbsoluto(coordenadas, {stof(balon.first), stof(balon.second)});
             float aux = 99999;
+            pair<float, float> jugadormascercano;
             auto jugadoresVistos = parsePlayerInfo(received_message_content);
             for (auto jugador : jugadoresVistos)
             {
@@ -259,19 +260,38 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                     auto jugadoraux = calculoAbsoluto(coordenadas, {jugador.distance, jugador.angle});
                     float distance = sqrt((xybalon.first - jugadoraux.first) * (xybalon.first - jugadoraux.first) + (xybalon.second - jugadoraux.second) * (xybalon.second - jugadoraux.second));
                     if (distance < aux)
+                    {
                         aux = distance;
+                        jugadormascercano = {jugador.distance, jugador.angle};
+                    }
                 }
             }
-            if (stof(balon.first) > aux)
+            if (stof(balon.first) < 0.6)
+            {
+                if (received_message_content.find("((p)) ") == -1)
+                {
+                    return resultado = "(dash 100 30)";
+                }
+                else
+                {
+                    float potencia = jugadormascercano.first;
+                    ostringstream angulojugador;
+                    angulojugador << jugadormascercano.second;
+                    string angulo(angulojugador.str());
+                    return resultado = "(kick 30 " + angulo + ")";
+                }
+            }
+            else if (stof(balon.first) > aux)
             {
                 return resultado = "(dash 0 0)";
             }
-            else
+            else if (stof(balon.first) < aux)
             {
                 return resultado = "(dash 100 " + balon.second + ")";
             }
         }
     }
+    return resultado;
 }
 
 string procesado(string received_message_content, string ladoJugador, string numero, string team_name)
