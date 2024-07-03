@@ -242,16 +242,33 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
     }
     if (saquebanda)
     {
-        float aux = 99999;
-        auto jugadoresVistos = parsePlayerInfo(received_message_content);
-        for (auto jugador : jugadoresVistos)
+        if (received_message_content.find("(b) ") == -1)
         {
-            if (jugador.teamName == team_name)
+            return resultado = "(turn 80)";
+        }
+        else
+        {
+            auto balon = buscarValores(received_message_content, "((b) ");
+            auto xybalon = calculoAbsoluto(coordenadas, {stof(balon.first), stof(balon.second)});
+            float aux = 99999;
+            auto jugadoresVistos = parsePlayerInfo(received_message_content);
+            for (auto jugador : jugadoresVistos)
             {
-                pair distancia
-                calculoAbsoluto();
-                if (jugador.distance < aux)
-                    aux = jugador.distance
+                if (jugador.teamName == team_name)
+                {
+                    auto jugadoraux = calculoAbsoluto(coordenadas, {jugador.distance, jugador.angle});
+                    float distance = sqrt((xybalon.first - jugadoraux.first) * (xybalon.first - jugadoraux.first) + (xybalon.second - jugadoraux.second) * (xybalon.second - jugadoraux.second));
+                    if (distance < aux)
+                        aux = distance;
+                }
+            }
+            if (stof(balon.first) > aux)
+            {
+                return resultado = "(dash 0 0)";
+            }
+            else
+            {
+                return resultado = "(dash 100 " + balon.second + ")";
             }
         }
     }
