@@ -501,3 +501,12 @@ string calculoangulogiro(float x, float y, float xgiro, float ygiro, float angul
     string giro(giro2.str());
     return giro;
 }
+
+pair<float, float> calculoAbsoluto(pair<pair<float, float>, float> coordenadasjugador, pair<float, float> objetivo)
+{
+    float anguloobjetivo = -coordenadasjugador.second + objetivo.second;
+    anguloobjetivo = anguloobjetivo * M_PI / 180;
+    float xobjetivo = objetivo.first * cos(anguloobjetivo) + coordenadasjugador.first.first;
+    float yobjetivo = objetivo.first * sin(anguloobjetivo) + coordenadasjugador.first.second;
+    return {xobjetivo, yobjetivo};
+}

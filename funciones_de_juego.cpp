@@ -16,9 +16,17 @@
 using namespace std;
 bool enJuego = false;
 bool saquebanda = false;
-float xbalon;
-float ybalon;
+// float xbalon;
+// float ybalon;
 visioncampo micontainer;
+
+enum decision
+{
+    CHUPARLA,
+    PASARLA,
+    TIRAR,
+    NADA,
+};
 
 struct PlayerInfo
 {
@@ -74,9 +82,46 @@ std::vector<PlayerInfo> parsePlayerInfo(const std::string &input)
     return players;
 }
 
+string tirar(string received_message_content, pair<pair<float, float>, float> coordenadas, string numeroJugador, string ladoJugador, string team_name)
+{
+    if (ladoJugador == "l")
+    {
+
+        string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 50, 0, coordenadas.second); // sacamos el angulo para mirar a la porteria
+        return "(kick 100 " + angulogiro + ")";
+    }
+    else
+    {
+        string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -50, 0, coordenadas.second); // sacamos el angulo para mirar a la porteria
+        return "(kick 100 " + angulogiro + ")";
+    }
+    return "";
+}
+string chuparla(string received_message_content, pair<pair<float, float>, float> coordenadas, string numeroJugador, string ladoJugador, string team_name)
+{
+    pair<string, string> relativasBalon = buscarValores(received_message_content, "((b) ");                                        // relativas balon
+    pair<float, float> baloncoordenadas = calculoAbsoluto(coordenadas, {stof(relativasBalon.first), stof(relativasBalon.second)}); // Coordenadas absolutas balon
+
+    float angulo = coordenadas.second;
+    if (angulo > 180)
+        angulo = angulo - 360;
+    string resultado;
+
+    if (ladoJugador == "l")
+    {
+
+        string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 50, 0, coordenadas.second); // sacamos el angulo para mirar a la porteria
+        return "(kick 30 " + angulogiro + ")";
+    }
+    else
+    {
+        string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -50, 0, coordenadas.second); // sacamos el angulo para mirar a la porteria
+        return "(kick 30 " + angulogiro + ")";
+    }
+    return "";
+}
 string pase(string received_message_content, pair<pair<float, float>, float> coordenadas, string numeroJugador, string ladoJugador, string team_name)
 {
-
     float aux = 99999;
     pair<float, float> jugadormascercano;
     auto jugadoresVistos = parsePlayerInfo(received_message_content);
@@ -106,39 +151,54 @@ string pase(string received_message_content, pair<pair<float, float>, float> coo
     return resultado;
 }
 
-bool chuparla(string received_message_content, pair<pair<float, float>, float> coordenadas, string numeroJugador, string ladoJugador, string team_name)
+decision decidir(string received_message_content, pair<pair<float, float>, float> coordenadas, string numeroJugador, string ladoJugador, string team_name)
 {
+
     auto jugadoresVistos = parsePlayerInfo(received_message_content);
     bool resultado;
-    bool suckit = false;
+    if (numeroJugador == "1")
+        return PASARLA;
+    // GESTIONAMOS DECISION DE TIRAR
+    if (ladoJugador == "l" && coordenadas.first.first > 30)
+        return TIRAR;
+    if (ladoJugador == "r" && coordenadas.first.first < -30)
+        return TIRAR;
+
+    bool paseaux1 = false;
+    bool paseaux2 = false;
+
+    // GESTIONAMOS DECISION DE PASAR
     for (auto jugador : jugadoresVistos)
     {
         if (jugador.teamName != team_name)
         {
             if (jugador.distance < 20)
             {
-                suckit = false;
+                paseaux1 = true;
             }
         }
         else
         {
-
-            suckit = true;
+            if (jugador.distance > 20 && jugador.playerNumber > stoi(numeroJugador))
+            {
+                paseaux2 = true;
+            }
         }
     }
-    resultado = suckit;
-    return resultado;
+    if (paseaux2 == true) // Si ve un jugador AMIGO lejos y numero MAYOR
+        return PASARLA;
+
+    // GESTIONAMOS LA DECISION DE CHUPARLA
+    if ((received_message_content.find("((p \"") == -1) || (paseaux1 == true && paseaux2 == false) || (paseaux1 == false && paseaux2 == false)) // Si no veo a nadie || veo no amigos
+        return CHUPARLA;
+
+    return NADA;
 }
 
 string ColocardeNuevo(string received_message_content, string ladoJugador, string numeroJugador)
 {
     string mensaje;
-    ostringstream xbalon2;
-    xbalon2 << xbalon;
-    string x(xbalon2.str());
-    ostringstream ybalon2;
-    ybalon2 << ybalon;
-    string y(ybalon2.str());
+
     if (numeroJugador == "1")
     { //(init l 1 before_kick_off)
         mensaje = "(move -51 0)";
@@ -164,15 +224,6 @@ string ColocardeNuevo(string received_message_content, string ladoJugador, strin
     else if (numeroJugador == "11")
         mensaje = "(move -8 -20)";
     return mensaje;
-}
-
-pair<float, float> calculoAbsoluto(pair<pair<float, float>, float> coordenadasjugador, pair<float, float> objetivo)
-{
-    float anguloobjetivo = -coordenadasjugador.second + objetivo.second;
-    anguloobjetivo = anguloobjetivo * M_PI / 180;
-    xbalon = objetivo.first * cos(anguloobjetivo) + coordenadasjugador.first.first;
-    ybalon = objetivo.first * sin(anguloobjetivo) + coordenadasjugador.first.second;
-    return {xbalon, ybalon};
 }
 
 bool Escuchar(string received_message_content, string ladoJugador)
@@ -212,9 +263,13 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
     {
         if (received_message_content.find("(b) ") != -1)
         {
+
             auto balon = buscarValores(received_message_content, "((b) ");
             // Aquí se procesan los valores de "(b)" en "balon"
             // std::cout << "Valor 1: " << par.first << ", Valor 2: " << par.second << std::endl;
+
+            // if (abs(stof(balon.second)) > 5)
+            //     return "(turn " + balon.second + ")"; // si vemos el balon lo enfocamos
 
             if (stoi(balon.first) >= 0.6 && stoi(balon.first) < 7)
             {
@@ -222,54 +277,80 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             }
             if (stoi(balon.first) < 0.6)
             {
-                ///////////
-                return resultado = pase(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                /////////// LABORATORIO DE PRUEBAS
+                // return chuparla(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                // return resultado = pase(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
                 ////////////
-                if (ladoJugador == "l")
-                { // Ve el balon y la porteria de la dcha
-                    if (received_message_content.find("(g r) ") != -1)
-                    {
-                        auto porteria = buscarValores(received_message_content, "((g r) ");
-                        return resultado = "(kick 100 " + porteria.second + ")";
 
-                    } // Ve el balon y el centro del campo
-                    else if ((received_message_content.find("(f c) ") != -1))
-                    {
-                        if (coordenadas.first.first < 0)
-                        { // solo dispara al centro si esta en el lado izquierdo del campo
-                            auto centro = buscarValores(received_message_content, "((f c) ");
-                            return resultado = "(kick 100 " + centro.second + ")";
-                        }
+                auto decisionconbalon = decidir(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
 
-                    } ////Ve el balon pero no ve ni la porteria de la dcha ni el centro del campo
-                    else if ((received_message_content.find("(f c) ") == -1) && (received_message_content.find("(g r) ") == -1))
-                    {
-                        return resultado = "(dash 100 30)";
-                    }
-                }
-                else
+                switch (decisionconbalon)
                 {
-                    if (received_message_content.find("(g l) ") != -1)
-                    { // Ve el balon y la porteria de la izq
-                        auto porteria = buscarValores(received_message_content, "((g l) ");
-                        return resultado = "(kick 100 " + porteria.second + ")";
+                case TIRAR:
+                    // return tirar(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                    return pase(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                    break;
+                case CHUPARLA:
 
-                    } // Ve el balon y el centro del campo
-                    else if ((received_message_content.find("(f c) ") != -1))
-                    {
-                        if (coordenadas.first.second > 0)
-                        { // solo dispara al centro si esta en el lado derecho del campo
-                            auto centro = buscarValores(received_message_content, "((f c) ");
-                            return resultado = "(kick 100 " + centro.second + ")";
-                        }
-
-                    } // Ve el balon pero no ve ni la porteria de la izq ni el centro del campo
-                    else if ((received_message_content.find("(f c) ") == -1) && (received_message_content.find("(g l) ") == -1))
-                    {
-                        return resultado = "(dash 100 30)";
-                    }
+                    // return chuparla(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                    return pase(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                    break;
+                case PASARLA:
+                    return pase(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                    break;
+                case NADA:
+                    return "";
+                    break;
+                default:
+                    return "";
+                    break;
                 }
-                return resultado = "(dash 100 " + balon.second + ")";
+
+                // if (ladoJugador == "l")
+                // { // Ve el balon y la porteria de la dcha
+                //     if (received_message_content.find("(g r) ") != -1)
+                //     {
+                //         auto porteria = buscarValores(received_message_content, "((g r) ");
+                //         return resultado = "(kick 100 " + porteria.second + ")";
+
+                //     } // Ve el balon y el centro del campo
+                //     else if ((received_message_content.find("(f c) ") != -1))
+                //     {
+                //         if (coordenadas.first.first < 0)
+                //         { // solo dispara al centro si esta en el lado izquierdo del campo
+                //             auto centro = buscarValores(received_message_content, "((f c) ");
+                //             return resultado = "(kick 100 " + centro.second + ")";
+                //         }
+
+                //     } ////Ve el balon pero no ve ni la porteria de la dcha ni el centro del campo
+                //     else if ((received_message_content.find("(f c) ") == -1) && (received_message_content.find("(g r) ") == -1))
+                //     {
+                //         return resultado = "(dash 100 30)";
+                //     }
+                // }
+                // else
+                // {
+                //     if (received_message_content.find("(g l) ") != -1)
+                //     { // Ve el balon y la porteria de la izq
+                //         auto porteria = buscarValores(received_message_content, "((g l) ");
+                //         return resultado = "(kick 100 " + porteria.second + ")";
+
+                //     } // Ve el balon y el centro del campo
+                //     else if ((received_message_content.find("(f c) ") != -1))
+                //     {
+                //         if (coordenadas.first.second > 0)
+                //         { // solo dispara al centro si esta en el lado derecho del campo
+                //             auto centro = buscarValores(received_message_content, "((f c) ");
+                //             return resultado = "(kick 100 " + centro.second + ")";
+                //         }
+
+                //     } // Ve el balon pero no ve ni la porteria de la izq ni el centro del campo
+                //     else if ((received_message_content.find("(f c) ") == -1) && (received_message_content.find("(g l) ") == -1))
+                //     {
+                //         return resultado = "(dash 100 30)";
+                //     }
+                // }
+                // return resultado = "(dash 100 " + balon.second + ")";
             }
             else if (zonaJuego(numerojugador, ladoJugador, coordenadas.first)) // Cuando ve la pelota y esta lejos
             {
@@ -295,7 +376,7 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
         }
         else if (received_message_content.find("(b) ") == -1) // Cuando no ve el balon
         {
-            return resultado = "(turn 80)";
+            return resultado = "(turn 60)";
         }
         return resultado;
     }
@@ -325,8 +406,8 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                     }
                 }
             }
-            cout << "Mi jugador mas cercano esta en " << jugadormascercano.first << " " << jugadormascercano.second << endl;
-            cout << "Mis coordenadas son " << coordenadas.first.first << " " << coordenadas.first.second << endl;
+            // cout << "Mi jugador mas cercano esta en " << jugadormascercano.first << " " << jugadormascercano.second << endl;
+            // cout << "Mis coordenadas son " << coordenadas.first.first << " " << coordenadas.first.second << endl;
             if (stof(balon.first) < 1)
             {
 

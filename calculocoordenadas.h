@@ -77,23 +77,80 @@ struct visioncampo
     vp bandaizq0m;    // fl0
 };
 
+/**
+ * @brief CALCULA LAS COORDENADAS ABSOLUTAS DEL JUGADOR.
+ *
+ *
+ * @param flagsmascercanas vector con dos pares, donde en cada par el PRIMER ELEMENTO es el indicativo del flag y el SEGUNDO ELEMENTO sus coordenadas VISTAS POR EL JUGADOR
+ * @param coordenadasABS vector con TODOS LOS PARES (Donde van a estar los dos del primer parametro) de indicativo del flag y sus coordenadas ABSOLUTAS
+ * @return Coordenadas absolutas del jugador
+ */
 pair<float, float> calcularCoordenadas(vector<pair<string, pair<float, float>>> flagsmascercanas, vector<pair<string, vp>> coordenadasABS);
 
+/**
+ * @brief CALCULA LOS CORTES DE DOS CIRCUNFERENCIAS DADO SUS CENTROS Y SUS RADIOS.
+ *          En nuestro caso siempre deben cortarse o ser tangentes o da error. Solo aplicable al juego.
+ *
+ * @param a1,a2,R Corresponden a los parametros de la primera circunferencia
+ * @param b1,b2,r Corresponden a los parametros de la segunda circunferencia
+ * @return Coordenadas de los dos cortes, que pueden ser el mismo (tangentes)
+ */
 vector<pair<float, float>> corteCircunferencias(float a1, float a2, float R, float b1, float b2, float r);
 
-// vector<string> separarPalabras(const string &palabra);
-
+/**
+ * @brief CALCULA LOS PARES QUE CONTIENEN LOS DOS FLAGS VISTOS POR EL JUGADOR A MENOR DISTANCIA.
+ *
+ *
+ * @param p Vector de pares donde el primer elemento es el indicativo y el segundo un par de distancia y angulo vistos por el jugador del flag
+ * @return Vector de dos elementos de los dos flags mas cercanos
+ */
 vector<pair<string, pair<float, float>>> buscarMenores(vector<pair<string, vp>> p);
 
-// pair<string, string> buscarValores(const std::string &input, const std::string &inicio);
-
+/**
+ * @brief En cada iteracion del bucle hace uso de la informacion del servidor para almacenarla en un contenedor global.
+ *
+ *
+ * @param p Palabra recibida por el servidor
+ * @param container Estructura donde se almacenan los datos extraidos de la palabra.
+ * @return devuelve las coordenadas absolutas del jugador
+ */
 pair<pair<float, float>, float> rellenaContenedor(visioncampo &container, const string &p);
 
-// Devuelve la congruencia de un ángulo
+/**
+ * @brief Hace la congruencia de un algulo pasado en radianes.
+ *
+ *
+ * @param angulo
+ * @return angulo positivo <= 2pi
+ */
 float congruencia_2pi(double angulo);
 
-// Devuelve el angulo a partir de las coordenadas del jugador y las de un flag, junto con el ángulo que forma la mirada del jugador con el flag
+/**
+ * @brief CALCULA EL ANGULO ABSOLUTO CON EL QUE MIRA EL JUGADOR
+ *
+ *
+ * @param flags Vector de dos elementos en el que la primera posicion es el indicativo del flag y el segundo la distancia y el angulo con el que lo ve el jugador
+ * @param absolutas Referencia constante a la estructura donde tenemos las posiciones de los flags con sus indicativos
+ * @return devuelve el angulo con el que mira el jugador
+ */
 float calcularAngulo(vector<pair<string, pair<float, float>>> const &flags, vector<pair<string, vp>> const &absolutas);
 
-// Devuel el angulo entre la direccion de vista del jugador y un punto del campo indicado
+/**
+ * @brief CALCULA EL ANGULO QUE DEBO GIRARME PARA MIRAR A UN FLAG EN CONCRETO
+ *
+ *
+ * @param x, y, angulojugador coordenadas absolutas del jugador y su ángulo de vision
+ * @param xgiro, ygiro coordenadas absolutas del sitio a donde quiero mirar
+ * @return angulo que debo girarme en grados, POSITIVO HORARIO
+ */
 string calculoangulogiro(float x, float y, float xgiro, float ygiro, float angulojugador);
+
+/**
+ * @brief CALCULA LAS COORDENADAS ABSOLUTAS DE ALGO QUE ESTAS MIRANDO
+ *
+ *
+ * @param coordenadasjugador coordenadas de mi jugador, primer elemento xy y segundo angulo de vision absoluto
+ * @param objetivo coordenadas de lo que veo, distancia y angulo
+ * @return coordenadas absolutas de lo que estoy viendo
+ */
+pair<float, float> calculoAbsoluto(pair<pair<float, float>, float> coordenadasjugador, pair<float, float> objetivo);

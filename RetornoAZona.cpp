@@ -1,5 +1,6 @@
 #include "RetornoAZona.h"
 #include "funciones_de_juego.h"
+#include "calculocoordenadas.h"
 #include <iostream>
 #include <thread>
 #include <sstream>
@@ -16,56 +17,81 @@ string retornoazona(string const &numerojugador, string const &ladoJugador, pair
         if (numerojugador == "1")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -50, 0, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+            {
+                return "(turn " + giro + ")";
+            }
+
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "2")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -35, -28, coordenadas.second);
-            return resultado = "(dash 100 " + giro + ")";
+            if (abs(stof(giro)) > 5)
+                // return "(turn " + giro + ")";
+                return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "5")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -35, 28, coordenadas.second);
-            return resultado = "(dash 100 " + giro + ")";
+            if (abs(stof(giro)) > 5)
+                // return "(turn " + giro + ")";
+                return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "3")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -42, -14, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "4")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -42, 14, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "6")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -25, 11, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "8")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -25, -11, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "11")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -8, -20, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "7")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -8, 20, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "10")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -15, 0, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "9")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -5, 0, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
     }
@@ -74,56 +100,78 @@ string retornoazona(string const &numerojugador, string const &ladoJugador, pair
         if (numerojugador == "1")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 50, 0, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "5")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 35, -28, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "2")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 35, 28, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "3")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 42, -14, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "4")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 42, 14, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "6")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 25, 11, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "8")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 25, -11, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "7")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 8, -20, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "11")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 8, 20, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "10")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 15, 0, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "9")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 5, 0, coordenadas.second);
+            if (abs(stof(giro)) > 5)
+                return "(turn " + giro + ")";
             return resultado = "(dash 100 " + giro + ")";
         }
     }
@@ -137,7 +185,7 @@ bool zonaJuego(string numerojugador, string lado, pair<float, float> coordenadas
 
     if (numerojugador == "1")
     {
-        return ((49 <= x && x <= 52) && (y < 7));
+        return ((48 <= x && x <= 52) && (y < 7));
     }
     else if (numerojugador == "2" || numerojugador == "5")
     {
