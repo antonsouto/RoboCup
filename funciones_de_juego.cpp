@@ -111,12 +111,12 @@ string chuparla(string received_message_content, pair<pair<float, float>, float>
     {
 
         string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 50, 0, coordenadas.second); // sacamos el angulo para mirar a la porteria
-        return "(kick 30 " + angulogiro + ")";
+        return "(kick 40 " + angulogiro + ")";
     }
     else
     {
         string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -50, 0, coordenadas.second); // sacamos el angulo para mirar a la porteria
-        return "(kick 30 " + angulogiro + ")";
+        return "(kick 40 " + angulogiro + ")";
     }
     return "";
 }
@@ -159,9 +159,9 @@ decision decidir(string received_message_content, pair<pair<float, float>, float
     if (numeroJugador == "1")
         return PASARLA;
     // GESTIONAMOS DECISION DE TIRAR
-    if (ladoJugador == "l" && coordenadas.first.first > 30)
+    if (ladoJugador == "l" && coordenadas.first.first > 20)
         return TIRAR;
-    if (ladoJugador == "r" && coordenadas.first.first < -30)
+    if (ladoJugador == "r" && coordenadas.first.first < -20)
         return TIRAR;
 
     bool paseaux1 = false;
@@ -271,7 +271,7 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             // if (abs(stof(balon.second)) > 5)
             //     return "(turn " + balon.second + ")"; // si vemos el balon lo enfocamos
 
-            if (stoi(balon.first) >= 0.6 && stoi(balon.first) < 7)
+            if (stoi(balon.first) >= 0.6 && stoi(balon.first) < 5)
             {
                 return resultado = "(dash 100 " + balon.second + ")";
             }
@@ -288,21 +288,21 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                 {
                 case TIRAR:
                     // return tirar(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
-                    return pase(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                    return tirar(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
                     break;
                 case CHUPARLA:
 
                     // return chuparla(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
-                    return pase(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                    return chuparla(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
                     break;
                 case PASARLA:
                     return pase(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
                     break;
                 case NADA:
-                    return "";
+
                     break;
                 default:
-                    return "";
+
                     break;
                 }
 
@@ -358,9 +358,9 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                 if (stoi(balon.first) > 70)
                     return resultado = "(turn " + balon.second + ")";
                 else if (stoi(balon.first) > 60)
-                    return resultado = "(dash 10 " + balon.second + ")";
+                    return resultado = "(dash 5 " + balon.second + ")";
                 else if (stoi(balon.first) > 30)
-                    return resultado = "(dash 30 " + balon.second + ")";
+                    return resultado = "(dash 20 " + balon.second + ")";
                 else if (stoi(balon.first) > 20)
                     return resultado = "(dash 80 " + balon.second + ")";
                 else
