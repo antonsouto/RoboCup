@@ -74,6 +74,62 @@ std::vector<PlayerInfo> parsePlayerInfo(const std::string &input)
     return players;
 }
 
+string pase(string received_message_content, pair<pair<float, float>, float> coordenadas, string numeroJugador, string ladoJugador, string team_name)
+{
+
+    float aux = 99999;
+    pair<float, float> jugadormascercano;
+    auto jugadoresVistos = parsePlayerInfo(received_message_content);
+    string resultado;
+
+    for (auto jugador : jugadoresVistos)
+    {
+        if (jugador.teamName == team_name)
+        {
+            float distance = jugador.distance;
+            if ((jugador.playerNumber > stoi(numeroJugador)) && jugador.distance > 10)
+            {
+                jugadormascercano = {jugador.distance, jugador.angle};
+                float factorp = jugador.distance * 3.5;
+                if (100 < factorp)
+                    factorp = 100;
+                ostringstream distjugador;
+                distjugador << factorp;
+                string potencia(distjugador.str());
+                ostringstream angulojugador;
+                angulojugador << jugadormascercano.second;
+                string angulo(angulojugador.str());
+                return resultado = "(kick " + potencia + " " + angulo + ")";
+            }
+        }
+    }
+    return resultado;
+}
+
+bool chuparla(string received_message_content, pair<pair<float, float>, float> coordenadas, string numeroJugador, string ladoJugador, string team_name)
+{
+    auto jugadoresVistos = parsePlayerInfo(received_message_content);
+    bool resultado;
+    bool suckit = false;
+    for (auto jugador : jugadoresVistos)
+    {
+        if (jugador.teamName != team_name)
+        {
+            if (jugador.distance < 20)
+            {
+                suckit = false;
+            }
+        }
+        else
+        {
+
+            suckit = true;
+        }
+    }
+    resultado = suckit;
+    return resultado;
+}
+
 string ColocardeNuevo(string received_message_content, string ladoJugador, string numeroJugador)
 {
     string mensaje;
@@ -160,12 +216,15 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             // Aquí se procesan los valores de "(b)" en "balon"
             // std::cout << "Valor 1: " << par.first << ", Valor 2: " << par.second << std::endl;
 
-            if (stoi(balon.first) >= 0.6 && stoi(balon.first) < 10)
+            if (stoi(balon.first) >= 0.6 && stoi(balon.first) < 7)
             {
                 return resultado = "(dash 100 " + balon.second + ")";
             }
             if (stoi(balon.first) < 0.6)
             {
+                ///////////
+                return resultado = pase(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                ////////////
                 if (ladoJugador == "l")
                 { // Ve el balon y la porteria de la dcha
                     if (received_message_content.find("(g r) ") != -1)

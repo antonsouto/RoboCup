@@ -182,14 +182,14 @@ pair<pair<float, float>, float> rellenaContenedor(visioncampo &container, const 
     vector<pair<string, vp>> bandaextsup;
     for (const auto &flagPair : flagMap)
     {
-        auto resultados = buscarValores(p, flagPair.first);
+        auto resultados = buscarValores(p, flagPair.first); // miramos p=> flag y flagPair.first=> x
         if (resultados.first == "-1")
         {
             *(flagPair.second) = {"-1", "-1"};
         }
         else
         {
-            *(flagPair.second) = resultados;
+            *(flagPair.second) = resultados; // separamos por banda
 
             if (flagPair.first.compare(0, 8, "((f l t ") == 0 || flagPair.first.compare(0, 8, "((f l 0)") == 0 || flagPair.first.compare(0, 8, "((f l b ") == 0)
             { // no puedo comparar la ultima parte (los numeros)
