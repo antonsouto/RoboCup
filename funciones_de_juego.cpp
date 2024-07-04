@@ -150,7 +150,7 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
     {
         auto balon = buscarValores(received_message_content, "((b) ");
         auto xybalon = calculoAbsoluto(coordenadas, {stof(balon.first), stof(balon.second)});
-        cout << xybalon.first << " " << xybalon.second << endl;
+        // cout << xybalon.first << " " << xybalon.second << endl;
     }
     if (enJuego)
     {
@@ -160,7 +160,7 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             // Aquí se procesan los valores de "(b)" en "balon"
             // std::cout << "Valor 1: " << par.first << ", Valor 2: " << par.second << std::endl;
 
-            if (stoi(balon.first) >= 0.6 && stoi(balon.first) < 5)
+            if (stoi(balon.first) >= 0.6 && stoi(balon.first) < 10)
             {
                 return resultado = "(dash 100 " + balon.second + ")";
             }
@@ -266,20 +266,25 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                     }
                 }
             }
-            if (stof(balon.first) < 0.6)
+            cout << "Mi jugador mas cercano esta en " << jugadormascercano.first << " " << jugadormascercano.second << endl;
+            cout << "Mis coordenadas son " << coordenadas.first.first << " " << coordenadas.first.second << endl;
+            if (stof(balon.first) < 1)
             {
-                if (received_message_content.find("((p)) ") == -1)
-                {
-                    return resultado = "(dash 100 30)";
-                }
-                else
-                {
-                    float potencia = jugadormascercano.first;
-                    ostringstream angulojugador;
-                    angulojugador << jugadormascercano.second;
-                    string angulo(angulojugador.str());
-                    return resultado = "(kick 30 " + angulo + ")";
-                }
+
+                // float potencia2 = jugadormascercano.first * 2;
+                // if (potencia2 > 100)
+                //     potencia2 = 100;
+                // ostringstream distjugador;
+                // distjugador << jugadormascercano.first;
+                // string potencia(distjugador.str());
+                // ostringstream angulojugador;
+                // angulojugador << jugadormascercano.second;
+                // string angulo(angulojugador.str());
+                return resultado = "(kick 90 180)";
+            }
+            else if (stof(balon.first) > 1 && stof(balon.first) < 1.5)
+            {
+                return resultado = "(dash 70 " + balon.second + ")";
             }
             else if (stof(balon.first) > aux)
             {
