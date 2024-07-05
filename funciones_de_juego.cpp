@@ -132,20 +132,18 @@ string pase(string received_message_content, pair<pair<float, float>, float> coo
         if (jugador.teamName == team_name)
         {
             float distance = jugador.distance;
-            if ((jugador.playerNumber > stoi(numeroJugador)) && jugador.distance > 10)
-            {
-                jugadormascercano = {jugador.distance, jugador.angle};
-                float factorp = jugador.distance * 3.5;
-                if (100 < factorp)
-                    factorp = 100;
-                ostringstream distjugador;
-                distjugador << factorp;
-                string potencia(distjugador.str());
-                ostringstream angulojugador;
-                angulojugador << jugadormascercano.second;
-                string angulo(angulojugador.str());
-                return resultado = "(kick " + potencia + " " + angulo + ")";
-            }
+
+            jugadormascercano = {jugador.distance, jugador.angle};
+            float factorp = jugador.distance * 3.5;
+            if (100 < factorp)
+                factorp = 100;
+            ostringstream distjugador;
+            distjugador << factorp;
+            string potencia(distjugador.str());
+            ostringstream angulojugador;
+            angulojugador << jugadormascercano.second;
+            string angulo(angulojugador.str());
+            return resultado = "(kick " + potencia + " " + angulo + ")";
         }
     }
     return resultado;
@@ -157,7 +155,12 @@ decision decidir(string received_message_content, pair<pair<float, float>, float
     auto jugadoresVistos = parsePlayerInfo(received_message_content);
     bool resultado;
     if (numeroJugador == "1")
-        return PASARLA;
+    {
+        if (received_message_content.find("((p \"") == -1)
+            return TIRAR;
+        else
+            return PASARLA;
+    }
     // GESTIONAMOS DECISION DE TIRAR
     if (ladoJugador == "l" && coordenadas.first.first > 20)
         return TIRAR;
@@ -354,8 +357,33 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             }
             else if (zonaJuego(numerojugador, ladoJugador, coordenadas.first)) // Cuando ve la pelota y esta lejos
             {
+                if (numerojugador == "1") // 5 = dist que me da igual la zona
+                {
+                    auto xybalon = calculoAbsoluto(coordenadas, {stof(balon.first), stof(balon.second)});
+                    auto diferencia_y = xybalon.second - coordenadas.first.second;
+                    cout << balon.second << endl;
 
-                if (stoi(balon.first) > 70)
+                    if (ladoJugador == "l")
+                    {
+
+                        if (abs(stoi(balon.second)) >= 5)
+                        {
+                            return resultado = "(turn " + balon.second + ")";
+                        }
+                        else if (xybalon.second <= coordenadas.first.second) // el balon esta arriba del portero
+                        {
+                            float angulodash = coordenadas.second - 90;
+                            return resultado = "(dash 40" + to_string(angulodash) + ")";
+                        }
+                        else if (xybalon.second >= coordenadas.first.second) // el balon esta abajo
+                        {
+                            float angulodash = abs(360 - coordenadas.second);
+                            angulodash = 90 - angulodash;
+                            return resultado = "(dash 40" + to_string(angulodash) + ")";
+                        }
+                    }
+                }
+                else if (stoi(balon.first) > 70)
                     return resultado = "(turn " + balon.second + ")";
                 else if (stoi(balon.first) > 60)
                     return resultado = "(dash 5 " + balon.second + ")";
