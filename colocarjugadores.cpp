@@ -47,7 +47,7 @@ string inicializoJugador(const string &respuesta)
     }
     else if (vrespuesta[2] == "9")
     {
-        mensaje = "(move -5 0)";
+        mensaje = "(move -0.5 0)";
     }
     else if (vrespuesta[2] == "10")
     {

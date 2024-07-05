@@ -16,6 +16,7 @@
 using namespace std;
 bool enJuego = false;
 bool saquebanda = false;
+bool saquecentro = false;
 // float xbalon;
 // float ybalon;
 visioncampo micontainer;
@@ -221,7 +222,7 @@ string ColocardeNuevo(string received_message_content, string ladoJugador, strin
     else if (numeroJugador == "8")
         mensaje = "(move -25 -11)";
     else if (numeroJugador == "9")
-        mensaje = "(move -5 0)";
+        mensaje = "(move -0.5 0)";
     else if (numeroJugador == "10")
         mensaje = "(move -15 0)";
     else if (numeroJugador == "11")
@@ -229,21 +230,31 @@ string ColocardeNuevo(string received_message_content, string ladoJugador, strin
     return mensaje;
 }
 
-bool Escuchar(string received_message_content, string ladoJugador)
+bool Escuchar(string received_message_content, string ladoJugador, string numero)
 {
 
     if ((received_message_content.find("play_on") != -1) || (received_message_content.find("kick_off") != -1))
     {
-        return enJuego = true;
+        if ((received_message_content.find("kick_off_l") != -1) && (ladoJugador == "l") && (stoi(numero) == 9))
+        {
+            saquecentro = true;
+        }
+        else if ((received_message_content.find("kick_off_r") != -1) && (ladoJugador == "r" && (stoi(numero) == 9)))
+        {
+            saquecentro = true;
+        }
+        enJuego = true;
         saquebanda = false;
     }
     else if (received_message_content.find("goal") != -1 || received_message_content.find("before_kick_off") != -1)
     {
-        return enJuego = false;
+        saquecentro = false;
+        enJuego = false;
         saquebanda = false;
     }
     else if ((received_message_content.find("kick_in") != -1))
     {
+        saquecentro = false;
         enJuego = false;
         saquebanda = true;
     }
@@ -264,6 +275,11 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
     }
     if (enJuego)
     {
+        if (saquecentro)
+        {
+            saquecentro = false;
+            return "(kick 100 -180)";
+        }
         if (received_message_content.find("(b) ") != -1)
         {
 
@@ -271,8 +287,8 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             // Aquí se procesan los valores de "(b)" en "balon"
             // std::cout << "Valor 1: " << par.first << ", Valor 2: " << par.second << std::endl;
 
-            // if (abs(stof(balon.second)) > 5)
-            //     return "(turn " + balon.second + ")"; // si vemos el balon lo enfocamos
+            if (abs(stof(balon.second)) > 5)
+                return "(turn " + balon.second + ")"; // si vemos el balon lo enfocamos
 
             if (stoi(balon.first) >= 0.6 && stoi(balon.first) < 5)
             {
@@ -296,10 +312,10 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                 case CHUPARLA:
 
                     // return chuparla(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
-                    return chuparla(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                    return tirar(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
                     break;
                 case PASARLA:
-                    return pase(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                    return tirar(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
                     break;
                 case NADA:
 
@@ -475,7 +491,7 @@ string procesado(string received_message_content, string ladoJugador, string num
     // Verificar si la cadena comienza con el prefijo
     if (received_message_content.compare(0, prefix.size(), prefix) == 0)
     {
-        enJuego = Escuchar(received_message_content, ladoJugador);
+        enJuego = Escuchar(received_message_content, ladoJugador, numero);
         if (received_message_content.find("goal") != -1)
         {
             resultado = ColocardeNuevo(received_message_content, ladoJugador, numero);
