@@ -420,25 +420,41 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                     auto diferencia_y = xybalon.second - coordenadas.first.second;
                     cout << balon.second << endl;
 
-                    if (ladoJugador == "l")
+                    if (abs(stoi(balon.second)) >= 5)
                     {
+                        return resultado = "(turn " + balon.second + ")";
+                    }
+                    // Si la y del portero es diferente al balon
+                    else if (xybalon.second != coordenadas.first.second)
+                    {
+                        float y;
+                        float yactual = xybalon.second;
+                        if (7 < xybalon.second) // la y del balon es mayor a la y del borde superior del area chica
+                        {
+                            y = 7; // el portero solo va a subir hasta el borde superior del area chica
+                        }
+                        else if (-7 > xybalon.second) // igual pero con el inferior
+                        {
+                            y = -7;
+                        }
+                        else
+                        {
+                            y = yactual; // en caso de que la y del balon este dentro de lo que es el area chica
+                        }
 
-                        if (abs(stoi(balon.second)) >= 5)
+                        // se mira el lado del que es y se cambia la x a la que tienen que ir
+                        if (ladoJugador == "l")
                         {
-                            return resultado = "(turn " + balon.second + ")";
+                            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -48, y, coordenadas.second);
+                            return resultado = "(dash 100 " + giro + ")";
                         }
-                        else if (xybalon.second <= coordenadas.first.second) // el balon esta arriba del portero
+                        else
                         {
-                            float angulodash = coordenadas.second - 90;
-                            return resultado = "(dash 40" + to_string(angulodash) + ")";
-                        }
-                        else if (xybalon.second >= coordenadas.first.second) // el balon esta abajo
-                        {
-                            float angulodash = abs(360 - coordenadas.second);
-                            angulodash = 90 - angulodash;
-                            return resultado = "(dash 40" + to_string(angulodash) + ")";
+                            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 48, y, coordenadas.second);
+                            return resultado = "(dash 100 " + giro + ")";
                         }
                     }
+                    return resultado;
                 }
                 else if (stoi(balon.first) > 70)
                     return resultado = "(turn " + balon.second + ")";
