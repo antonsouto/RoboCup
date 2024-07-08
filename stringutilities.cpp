@@ -149,3 +149,49 @@ pair<string, string> buscarValores(const std::string &input, const std::string &
 
     return {"-1", "-1"};
 }
+
+vector<PlayerInfo> parsePlayerInfo(const string &input) // Funcion que almacena el nombre del equipo, el numero del jugador, la distancia  el angulo al que esta.
+{
+    vector<PlayerInfo> players;
+    string::size_type start = 0;
+
+    while ((start = input.find("((p \"", start)) != string::npos)
+    {
+        start += 5; // nos colocamos detras de"((p \""
+        string::size_type endQuote = input.find("\"", start);
+        string teamName = input.substr(start, endQuote - start);
+
+        // quitamos el )
+        start = endQuote + 1;
+
+        int playerNumber = -1;
+        if (input[start] == ' ')
+        {
+            ++start; // quitamos el espacio
+            if (isdigit(input[start]))
+            {
+                string::size_type endNum = input.find(")", start);
+                std::string numStr = input.substr(start, endNum - start);
+                playerNumber = std::stoi(numStr);
+                start = endNum; // recogemos el numero del jugador
+            }
+        }
+
+        // Recogemos la distancia y angulo
+        start = input.find(") ", start) + 2; // quitamos el segundo )
+        string::size_type dataEnd = input.find(' ', start);
+        float distance = stof(input.substr(start, dataEnd - start));
+
+        start = dataEnd + 1;
+        dataEnd = input.find(' ', start);
+        float angle = stof(input.substr(start, dataEnd - start));
+
+        PlayerInfo player = {teamName, playerNumber, distance, angle};
+        players.push_back(player);
+
+        // Buscamos al siguiente jugador
+        start = dataEnd;
+    }
+
+    return players;
+}

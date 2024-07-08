@@ -1,7 +1,16 @@
+#pragma once
 #include <iostream>
 #include <vector>
 
 using namespace std;
+
+struct PlayerInfo
+{
+    std::string teamName;
+    int playerNumber;
+    float distance;
+    float angle;
+};
 
 /**
  * @brief Dado un string separa las palabras contenidas dentro del primer parentesis
@@ -15,3 +24,4 @@ vector<string> separarPalabras(const string &palabra);
 vector<string> separarParentesis(const string &p);
 pair<string, string> buscarValores(const std::string &input, const std::string &inicio);
 string trim_left(const std::string &str);
+vector<PlayerInfo> parsePlayerInfo(const string &input);

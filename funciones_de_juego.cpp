@@ -36,61 +36,7 @@ enum decision
     NADA,
 };
 
-struct PlayerInfo
-{
-    std::string teamName;
-    int playerNumber;
-    float distance;
-    float angle;
-};
-
-std::vector<PlayerInfo> parsePlayerInfo(const std::string &input)
-{
-    std::vector<PlayerInfo> players;
-    std::string::size_type start = 0;
-
-    while ((start = input.find("((p \"", start)) != std::string::npos)
-    {
-        start += 5; // Move past "((p \""
-        std::string::size_type endQuote = input.find("\"", start);
-        std::string teamName = input.substr(start, endQuote - start);
-
-        // Move past the closing quote
-        start = endQuote + 1;
-
-        int playerNumber = -1;
-        if (input[start] == ' ')
-        {
-            ++start; // Move past the space
-            if (isdigit(input[start]))
-            {
-                std::string::size_type endNum = input.find(")", start);
-                std::string numStr = input.substr(start, endNum - start);
-                playerNumber = std::stoi(numStr);
-                start = endNum; // Move past the number
-            }
-        }
-
-        // Move to the data part
-        start = input.find(") ", start) + 2; // Move past ") "
-        std::string::size_type dataEnd = input.find(' ', start);
-        float distance = std::stof(input.substr(start, dataEnd - start));
-
-        start = dataEnd + 1;
-        dataEnd = input.find(' ', start);
-        float angle = std::stof(input.substr(start, dataEnd - start));
-
-        PlayerInfo player = {teamName, playerNumber, distance, angle};
-        players.push_back(player);
-
-        // Move past the current player data to continue the search
-        start = dataEnd;
-    }
-
-    return players;
-}
-
-void AlmacenarPosicionAngulo(pair<pair<float, float>, float> coordenadas)
+void AlmacenarPosicionAngulo(pair<pair<float, float>, float> coordenadas) // Funcion para guardar la posicion anterior del jugador.
 {
     if (coordenadas.first.first != 0 && coordenadas.first.second != 0)
     {
@@ -102,13 +48,13 @@ void AlmacenarPosicionAngulo(pair<pair<float, float>, float> coordenadas)
 
 string tirar(string received_message_content, pair<pair<float, float>, float> coordenadas, string numeroJugador, string ladoJugador, string team_name)
 {
-    if (ladoJugador == "l")
+    if (ladoJugador == "l") // tiramos hacia la porteria derecha
     {
 
         string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 50, 0, coordenadas.second); // sacamos el angulo para mirar a la porteria
         return "(kick 100 " + angulogiro + ")";
     }
-    else
+    else // tiramos hacia la porteria izquierda
     {
         string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -50, 0, coordenadas.second); // sacamos el angulo para mirar a la porteria
         return "(kick 100 " + angulogiro + ")";
@@ -145,9 +91,9 @@ string pase(string received_message_content, pair<pair<float, float>, float> coo
     auto jugadoresVistos = parsePlayerInfo(received_message_content);
     string resultado;
 
-    for (auto jugador : jugadoresVistos)
+    for (auto jugador : jugadoresVistos) // recorremos todos los jugadores a los que vemos
     {
-        if (jugador.teamName == team_name)
+        if (jugador.teamName == team_name) // para los jugadores de nuestro equipo
         {
             float distance = jugador.distance;
 
@@ -155,13 +101,7 @@ string pase(string received_message_content, pair<pair<float, float>, float> coo
             float factorp = jugador.distance * 3.5;
             if (100 < factorp)
                 factorp = 100;
-            ostringstream distjugador;
-            distjugador << factorp;
-            string potencia(distjugador.str());
-            ostringstream angulojugador;
-            angulojugador << jugadormascercano.second;
-            string angulo(angulojugador.str());
-            return resultado = "(kick " + potencia + " " + angulo + ")";
+            return resultado = "(kick " + to_string(factorp) + " " + to_string(jugadormascercano.second) + ")";
         }
     }
     return resultado;
@@ -169,12 +109,11 @@ string pase(string received_message_content, pair<pair<float, float>, float> coo
 
 decision decidir(string received_message_content, pair<pair<float, float>, float> coordenadas, string numeroJugador, string ladoJugador, string team_name)
 {
-
     auto jugadoresVistos = parsePlayerInfo(received_message_content);
     bool resultado;
     if (numeroJugador == "1")
     {
-        if (received_message_content.find("((p \"") == -1)
+        if (received_message_content.find("((p \"" + team_name + "\"") == -1)
             return TIRAR;
         else
             return PASARLA;
@@ -373,8 +312,6 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
 
             auto balon = buscarValores(received_message_content, "((b) ");
             // Aquí se procesan los valores de "(b)" en "balon"
-            // std::cout << "Valor 1: " << par.first << ", Valor 2: " << par.second << std::endl;
-
             if (abs(stof(balon.second)) > 10)
                 return "(turn " + balon.second + ")"; // si vemos el balon lo enfocamos
 
@@ -384,11 +321,6 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             }
             if (stoi(balon.first) < 0.6)
             {
-                /////////// LABORATORIO DE PRUEBAS
-                // return chuparla(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
-                // return resultado = pase(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
-                ////////////
-
                 auto decisionconbalon = decidir(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
 
                 switch (decisionconbalon)
@@ -498,7 +430,9 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             {
                 if (jugador.teamName == team_name)
                 {
+                    // distancia angulo a la que veo el jugador
                     auto jugadoraux = calculoAbsoluto(coordenadas, {jugador.distance, jugador.angle});
+                    // distancia a la que esta el jugador del balon
                     float distance = sqrt((xybalon.first - jugadoraux.first) * (xybalon.first - jugadoraux.first) + (xybalon.second - jugadoraux.second) * (xybalon.second - jugadoraux.second));
                     if (distance < aux)
                     {
@@ -507,8 +441,6 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                     }
                 }
             }
-            // cout << "Mi jugador mas cercano esta en " << jugadormascercano.first << " " << jugadormascercano.second << endl;
-            // cout << "Mis coordenadas son " << coordenadas.first.first << " " << coordenadas.first.second << endl;
             if (abs(stof(balon.first)) < 1)
             {
                 return resultado = "(kick 90 180)";
@@ -557,13 +489,11 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             if (ladoJugador == "l")
             {
                 string angulocorner = calculoangulogiro(xjugadorprev, yjugadorprev, 20, 0, angulojugadorprev);
-                cout << "Estoy en " << xjugadorprev << " " << yjugadorprev << " Mi angulo es " << angulojugadorprev << " Tengo que tirar con angulo " << angulocorner << endl;
                 return "(kick 90 " + angulocorner + ")";
             }
             else if (ladoJugador == "r")
             {
                 string angulocorner = calculoangulogiro(xjugadorprev, yjugadorprev, -20, 0, angulojugadorprev);
-                cout << "Estoy en " << xjugadorprev << " " << yjugadorprev << " Mi angulo es " << angulojugadorprev << " Tengo que tirar con angulo " << angulocorner << endl;
                 return "(kick 90 " + angulocorner + ")";
             }
         }
@@ -630,7 +560,7 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             return "(turn " + balon.second + ")"; // si vemos el balon lo enfocamos
         if (abs(stof(balon.first)) < 1)
         {
-            if (received_message_content.find("((p \"") != -1)
+            if (received_message_content.find("((p \"" + team_name + "\"") != -1)
             {
                 return pase(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
             }

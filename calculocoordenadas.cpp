@@ -496,10 +496,7 @@ string calculoangulogiro(float x, float y, float xgiro, float ygiro, float angul
         }
     }
 
-    ostringstream giro2;
-    giro2 << angulogiro;
-    string giro(giro2.str());
-    return giro;
+     return to_string(angulogiro);
 }
 
 pair<float, float> calculoAbsoluto(pair<pair<float, float>, float> coordenadasjugador, pair<float, float> objetivo)
