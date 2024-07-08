@@ -49,8 +49,8 @@ int main(int argc, char *argv[])
 
     MinimalSocket::Address other_recipient_udp = MinimalSocket::Address{"127.0.0.1", 6000}; // Mandas un mensaje al puerto 6000 y recibes la direccion de puerto nueva del servidor
     cout << "(init " + team_name + "(version 19))";
-
-    if (argv[2] == "goalie")
+    string tipo_jugador = argv[2];
+    if (tipo_jugador == "goalie")
     {
         udp_socket.sendTo("(init " + team_name + "(version 19) (goalie))", other_recipient_udp);
     }
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
         auto received_message = udp_socket.receive(message_max_size);
         string received_message_content = received_message->received_message;
         // Prefijo a buscar
-        string resultado = procesado(received_message_content, ladoJugador, numerojugador,team_name);
+        string resultado = procesado(received_message_content, ladoJugador, numerojugador, team_name);
         udp_socket.sendTo(resultado, server_udp);
     }
 
