@@ -34,13 +34,13 @@ string retornoazona(string const &numerojugador, string const &ladoJugador, pair
         }
         else if (numerojugador == "3")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -42, -14, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -36, -7, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "4")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -42, 14, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -36, 7, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
@@ -103,13 +103,13 @@ string retornoazona(string const &numerojugador, string const &ladoJugador, pair
         }
         else if (numerojugador == "3")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 42, -14, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 36, 7, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "4")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 42, 14, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 36, -7, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }

@@ -23,11 +23,11 @@ string inicializoJugador(const string &respuesta)
     }
     else if (vrespuesta[2] == "3")
     {
-        mensaje = "(move -42 -14)";
+        mensaje = "(move -36 -7)";
     }
     else if (vrespuesta[2] == "4")
     {
-        mensaje = "(move -42 14)";
+        mensaje = "(move -36 7)";
     }
     else if (vrespuesta[2] == "5")
     {
