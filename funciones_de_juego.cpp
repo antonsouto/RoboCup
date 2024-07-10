@@ -161,6 +161,7 @@ decision decidir(string received_message_content, pair<pair<float, float>, float
 
     bool paseaux1 = false;
     bool paseaux2 = false;
+    bool paseaux3 = false;
 
     // GESTIONAMOS DECISION DE PASAR
     for (auto jugador : jugadoresVistos)
@@ -170,6 +171,10 @@ decision decidir(string received_message_content, pair<pair<float, float>, float
             if (jugador.distance < 20)
             {
                 paseaux1 = true;
+            }
+            if (jugador.distance < 7)
+            {
+                paseaux3 = true;
             }
         }
         else
@@ -192,6 +197,8 @@ decision decidir(string received_message_content, pair<pair<float, float>, float
     // if (paseaux1 == true && paseaux2 == false)
     //     return DRIBLAR;
     // GESTIONAMOS LA DECISION DE CHUPARLA
+    if ((numeroJugador == "3" || numeroJugador == "4" || numeroJugador == "5" || numeroJugador == "2") && paseaux3 == true)
+        return TIRAR;
     if ((received_message_content.find("((p \"") == -1) || paseaux1 == true && paseaux2 == false || (paseaux1 == false && paseaux2 == false)) // Si no veo a nadie || veo no amigos
         return CHUPARLA;
 
@@ -207,22 +214,22 @@ string ColocardeNuevo(string received_message_content, string ladoJugador, strin
         mensaje = "(move -51 0)";
     }
     else if (numeroJugador == "2")
-        mensaje = "(move -35 -28)";
+        mensaje = "(move -35 -14)";
     else if (numeroJugador == "3")
-        mensaje = "(move -36 -5)";
+        mensaje = "(move -36 -3)";
     else if (numeroJugador == "4")
-        mensaje = "(move -36 5)";
+        mensaje = "(move -36 3)";
     else if (numeroJugador == "5")
-        mensaje = "(move -35 28)";
+        mensaje = "(move -35 14)";
     else if (numeroJugador == "6")
         mensaje = "(move -25 9)";
-    else if (numeroJugador == "7")
+    else if (numeroJugador == "10")
         mensaje = "(move -8 20)";
     else if (numeroJugador == "8")
         mensaje = "(move -25 -9)";
     else if (numeroJugador == "9")
         mensaje = "(move -0.5 0)";
-    else if (numeroJugador == "10")
+    else if (numeroJugador == "7")
         mensaje = "(move -15 0)";
     else if (numeroJugador == "11")
         mensaje = "(move -8 -20)";
@@ -380,7 +387,13 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
                 return resultado = "(dash 100 " + balon.second + ")";
             }
             if (numerojugador == "1" && stoi(balon.first) < 2)
+            {
+                if (abs(coordenadas.first.first) < 39)
+                {
+                    return tirar(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                }
                 return "(catch " + balon.second + ")";
+            }
             else if (stoi(balon.first) < 0.6)
             {
                 auto decisionconbalon = decidir(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);

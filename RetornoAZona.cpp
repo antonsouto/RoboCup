@@ -34,41 +34,41 @@ string retornoazona(string const &numerojugador, string const &ladoJugador, pair
         }
         else if (numerojugador == "3")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -36, 5, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -36, 3, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "4")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -36, 5, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -36, -3, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "6")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -25, 11, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -25, 9, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "8")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -25, -11, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -25, -9, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "11")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 20, 0, coordenadas.second);
-
-            return resultado = "(dash 100 " + giro + ")";
-        }
-        else if (numerojugador == "7")
-        {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -8, 20, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 20, -15, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "10")
+        {
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 20, 15, coordenadas.second);
+
+            return resultado = "(dash 100 " + giro + ")";
+        }
+        else if (numerojugador == "7")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -15, 0, coordenadas.second);
 
@@ -103,41 +103,41 @@ string retornoazona(string const &numerojugador, string const &ladoJugador, pair
         }
         else if (numerojugador == "3")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 36, 5, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 36, 3, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "4")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 36, -5, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 36, -3, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "6")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 25, 11, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 25, 9, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "8")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 25, -11, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 25, -9, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
-        else if (numerojugador == "7")
+        else if (numerojugador == "10")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 8, -20, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -20, -15, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
         else if (numerojugador == "11")
         {
-            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -20, 0, coordenadas.second);
+            auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -20, 15, coordenadas.second);
 
             return resultado = "(dash 100 " + giro + ")";
         }
-        else if (numerojugador == "10")
+        else if (numerojugador == "7")
         {
             auto giro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 15, 0, coordenadas.second);
 
@@ -179,27 +179,27 @@ bool zonaJuego(string numerojugador, string lado, pair<float, float> coordenadas
     {
         return ((40 >= coordenadas.first && coordenadas.first >= -30) && (0 <= y && y <= 33));
     }
-    else if ((numerojugador == "7") && (lado == "l"))
+    else if ((numerojugador == "10") && (lado == "l"))
     {
-        return ((-10 <= coordenadas.first && coordenadas.first <= 40) && (5 <= y && y <= 33));
+        return ((19 <= coordenadas.first && coordenadas.first <= 50) && (-15 <= y && y <= 15));
     }
     else if ((numerojugador == "11") && (lado == "l"))
     {
         return ((19 <= coordenadas.first && coordenadas.first <= 50) && (-15 <= y && y <= 15));
     }
-    else if ((numerojugador == "7") && (lado == "r"))
+    else if ((numerojugador == "10") && (lado == "r"))
     {
-        return ((10 >= coordenadas.first && coordenadas.first >= -40) && (5 <= y && y <= 33));
+        return ((-19 <= coordenadas.first && coordenadas.first <= -50) && (-15 <= y && y <= 15));
     }
     else if ((numerojugador == "11") && (lado == "l"))
     {
         return ((-19 <= coordenadas.first && coordenadas.first <= -50) && (-15 <= y && y <= 15));
     }
-    else if ((numerojugador == "10") && (lado == "l"))
+    else if ((numerojugador == "7") && (lado == "l"))
     {
         return ((-25 <= coordenadas.first && coordenadas.first <= 40) && (0 <= y && y <= 25));
     }
-    else if ((numerojugador == "10") && (lado == "r"))
+    else if ((numerojugador == "7") && (lado == "r"))
     {
         return ((25 >= coordenadas.first && coordenadas.first >= -40) && (0 <= y && y <= 25));
     }
