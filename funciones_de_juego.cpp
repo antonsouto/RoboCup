@@ -97,26 +97,26 @@ string chuparla(string received_message_content, pair<pair<float, float>, float>
     string resultado;
     if (ladoJugador == "l")
     {
-        if (paseaux1 == true && coordenadas.first.second < 0)
+        if (coordenadas.second < 200 && coordenadas.second >= 160)
         {
-            return "(kick 13 60)";
+            return "(kick 20 120)";
         }
-        else if (paseaux1 == true && coordenadas.first.second >= 0)
+        if (paseaux1 == true)
         {
-            return "(kick 13 60)";
+            return "(kick 20 60)";
         }
         string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 50, 0, coordenadas.second); // sacamos el angulo para mirar a la porteria
         return "(kick 20 " + angulogiro + ")";
     }
     else
     {
-        if (paseaux1 == true && coordenadas.first.second < 0)
+        if (coordenadas.second < 20 && coordenadas.second >= 340)
         {
-            return "(kick 13 60)";
+            return "(kick 20 120)";
         }
-        else if (paseaux1 == true && coordenadas.first.second >= 0)
+        if (paseaux1 == true)
         {
-            return "(kick 13 60)";
+            return "(kick 20 60)";
         }
         string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -50, 0, coordenadas.second); // sacamos el angulo para mirar a la porteria
         return "(kick 20 " + angulogiro + ")";
@@ -209,17 +209,17 @@ string ColocardeNuevo(string received_message_content, string ladoJugador, strin
     else if (numeroJugador == "2")
         mensaje = "(move -35 -28)";
     else if (numeroJugador == "3")
-        mensaje = "(move -36 -7)";
+        mensaje = "(move -36 -5)";
     else if (numeroJugador == "4")
-        mensaje = "(move -36 7)";
+        mensaje = "(move -36 5)";
     else if (numeroJugador == "5")
         mensaje = "(move -35 28)";
     else if (numeroJugador == "6")
-        mensaje = "(move -25 11)";
+        mensaje = "(move -25 9)";
     else if (numeroJugador == "7")
         mensaje = "(move -8 20)";
     else if (numeroJugador == "8")
-        mensaje = "(move -25 -11)";
+        mensaje = "(move -25 -9)";
     else if (numeroJugador == "9")
         mensaje = "(move -0.5 0)";
     else if (numeroJugador == "10")

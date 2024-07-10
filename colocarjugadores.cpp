@@ -19,23 +19,23 @@ string inicializoJugador(const string &respuesta)
     }
     else if (vrespuesta[2] == "2")
     {
-        mensaje = "(move -35 -28)";
+        mensaje = "(move -35 -14)";
     }
     else if (vrespuesta[2] == "3")
     {
-        mensaje = "(move -36 -7)";
+        mensaje = "(move -36 -3)";
     }
     else if (vrespuesta[2] == "4")
     {
-        mensaje = "(move -36 7)";
+        mensaje = "(move -36 3)";
     }
     else if (vrespuesta[2] == "5")
     {
-        mensaje = "(move -35 28)";
+        mensaje = "(move -35 14)";
     }
     else if (vrespuesta[2] == "6")
     {
-        mensaje = "(move -25 11)";
+        mensaje = "(move -25 9)";
     }
     else if (vrespuesta[2] == "7")
     {
@@ -43,7 +43,7 @@ string inicializoJugador(const string &respuesta)
     }
     else if (vrespuesta[2] == "8")
     {
-        mensaje = "(move -25 -11)";
+        mensaje = "(move -25 -9)";
     }
     else if (vrespuesta[2] == "9")
     {
