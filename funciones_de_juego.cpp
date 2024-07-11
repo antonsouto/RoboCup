@@ -56,12 +56,12 @@ string tirar(string received_message_content, pair<pair<float, float>, float> co
     if (ladoJugador == "l") // tiramos hacia la porteria derecha
     {
 
-        string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 50, 4, coordenadas.second); // sacamos el angulo para mirar a la porteria
+        string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 50, -4, coordenadas.second); // sacamos el angulo para mirar a la porteria
         return "(kick 100 " + angulogiro + ")";
     }
     else // tiramos hacia la porteria izquierda
     {
-        string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -50, -4, coordenadas.second); // sacamos el angulo para mirar a la porteria
+        string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -50, 4, coordenadas.second); // sacamos el angulo para mirar a la porteria
         return "(kick 100 " + angulogiro + ")";
     }
     return "";
