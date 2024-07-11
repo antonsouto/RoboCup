@@ -34,6 +34,7 @@ enum decision
     PASARLA,
     TIRAR,
     NADA,
+    DRIBLAR,
 };
 
 void AlmacenarPosicionAngulo(pair<pair<float, float>, float> coordenadas) // Funcion para guardar la posicion anterior del jugador.
@@ -46,17 +47,21 @@ void AlmacenarPosicionAngulo(pair<pair<float, float>, float> coordenadas) // Fun
     }
 }
 
+// string driblar(string received_message_content, pair<pair<float, float>, float> coordenadas, string numeroJugador, string ladoJugador, string team_name)
+// {
+//     return "(kick 20 120)";
+// }
 string tirar(string received_message_content, pair<pair<float, float>, float> coordenadas, string numeroJugador, string ladoJugador, string team_name)
 {
     if (ladoJugador == "l") // tiramos hacia la porteria derecha
     {
 
-        string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 50, 5, coordenadas.second); // sacamos el angulo para mirar a la porteria
+        string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 50, -4, coordenadas.second); // sacamos el angulo para mirar a la porteria
         return "(kick 100 " + angulogiro + ")";
     }
     else // tiramos hacia la porteria izquierda
     {
-        string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -50, -5, coordenadas.second); // sacamos el angulo para mirar a la porteria
+        string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -50, 4, coordenadas.second); // sacamos el angulo para mirar a la porteria
         return "(kick 100 " + angulogiro + ")";
     }
     return "";
@@ -65,20 +70,54 @@ string chuparla(string received_message_content, pair<pair<float, float>, float>
 {
     pair<string, string> relativasBalon = buscarValores(received_message_content, "((b) ");                                        // relativas balon
     pair<float, float> baloncoordenadas = calculoAbsoluto(coordenadas, {stof(relativasBalon.first), stof(relativasBalon.second)}); // Coordenadas absolutas balon
+    auto jugadoresVistos = parsePlayerInfo(received_message_content);
+    bool paseaux1 = false;
+    bool paseaux2 = false;
+    for (auto jugador : jugadoresVistos)
+    {
+        if (jugador.teamName != team_name)
+        {
+            if (jugador.distance < 5)
+            {
+                paseaux1 = true;
+            }
+        }
+        else
+        {
+            if (jugador.distance > 20 && jugador.playerNumber > stoi(numeroJugador))
+            {
+                paseaux2 = true;
+            }
+        }
+    }
 
     float angulo = coordenadas.second;
     if (angulo > 180)
         angulo = angulo - 360;
     string resultado;
-
     if (ladoJugador == "l")
     {
-
+        if (coordenadas.second < 200 && coordenadas.second >= 160)
+        {
+            return "(kick 20 120)";
+        }
+        if (paseaux1 == true)
+        {
+            return "(kick 20 60)";
+        }
         string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, 50, 0, coordenadas.second); // sacamos el angulo para mirar a la porteria
         return "(kick 20 " + angulogiro + ")";
     }
     else
     {
+        if (coordenadas.second < 20 && coordenadas.second >= 340)
+        {
+            return "(kick 20 120)";
+        }
+        if (paseaux1 == true)
+        {
+            return "(kick 20 60)";
+        }
         string angulogiro = calculoangulogiro(coordenadas.first.first, coordenadas.first.second, -50, 0, coordenadas.second); // sacamos el angulo para mirar a la porteria
         return "(kick 20 " + angulogiro + ")";
     }
@@ -96,12 +135,14 @@ string pase(string received_message_content, pair<pair<float, float>, float> coo
         if (jugador.teamName == team_name) // para los jugadores de nuestro equipo
         {
             float distance = jugador.distance;
-
-            jugadormascercano = {jugador.distance, jugador.angle};
-            float factorp = jugador.distance * 2.55;
-            if (100 < factorp)
-                factorp = 100;
-            return resultado = "(kick " + to_string(factorp) + " " + to_string(jugadormascercano.second) + ")";
+            if (jugador.distance > 20 && jugador.playerNumber > stoi(numeroJugador))
+            {
+                jugadormascercano = {jugador.distance, jugador.angle};
+                float factorp = jugador.distance * 2.55;
+                if (100 < factorp)
+                    factorp = 100;
+                return resultado = "(kick " + to_string(factorp) + " " + to_string(jugadormascercano.second) + ")";
+            }
         }
     }
     return resultado;
@@ -111,13 +152,7 @@ decision decidir(string received_message_content, pair<pair<float, float>, float
 {
     auto jugadoresVistos = parsePlayerInfo(received_message_content);
     bool resultado;
-    if (numeroJugador == "1")
-    {
-        if (received_message_content.find("((p \"" + team_name + "\"") == -1)
-            return TIRAR;
-        else
-            return PASARLA;
-    }
+
     // GESTIONAMOS DECISION DE TIRAR
     if (ladoJugador == "l" && coordenadas.first.first > 20)
         return TIRAR;
@@ -126,6 +161,7 @@ decision decidir(string received_message_content, pair<pair<float, float>, float
 
     bool paseaux1 = false;
     bool paseaux2 = false;
+    bool paseaux3 = false;
 
     // GESTIONAMOS DECISION DE PASAR
     for (auto jugador : jugadoresVistos)
@@ -136,6 +172,10 @@ decision decidir(string received_message_content, pair<pair<float, float>, float
             {
                 paseaux1 = true;
             }
+            if (jugador.distance < 7)
+            {
+                paseaux3 = true;
+            }
         }
         else
         {
@@ -145,11 +185,21 @@ decision decidir(string received_message_content, pair<pair<float, float>, float
             }
         }
     }
+    if (numeroJugador == "1")
+    {
+        if (paseaux2 == false)
+            return TIRAR;
+        else
+            return PASARLA;
+    }
     if (paseaux2 == true) // Si ve un jugador AMIGO lejos y numero MAYOR
         return PASARLA;
-
+    // if (paseaux1 == true && paseaux2 == false)
+    //     return DRIBLAR;
     // GESTIONAMOS LA DECISION DE CHUPARLA
-    if ((received_message_content.find("((p \"") == -1) || (paseaux1 == true && paseaux2 == false) || (paseaux1 == false && paseaux2 == false)) // Si no veo a nadie || veo no amigos
+    if ((numeroJugador == "3" || numeroJugador == "4" || numeroJugador == "5" || numeroJugador == "2") && paseaux3 == true)
+        return TIRAR;
+    if ((received_message_content.find("((p \"") == -1) || paseaux1 == true && paseaux2 == false || (paseaux1 == false && paseaux2 == false)) // Si no veo a nadie || veo no amigos
         return CHUPARLA;
 
     return NADA;
@@ -164,22 +214,22 @@ string ColocardeNuevo(string received_message_content, string ladoJugador, strin
         mensaje = "(move -51 0)";
     }
     else if (numeroJugador == "2")
-        mensaje = "(move -35 -28)";
+        mensaje = "(move -35 -14)";
     else if (numeroJugador == "3")
-        mensaje = "(move -42 -14)";
+        mensaje = "(move -36 -3)";
     else if (numeroJugador == "4")
-        mensaje = "(move -42 14)";
+        mensaje = "(move -36 3)";
     else if (numeroJugador == "5")
-        mensaje = "(move -35 28)";
+        mensaje = "(move -35 14)";
     else if (numeroJugador == "6")
-        mensaje = "(move -25 11)";
-    else if (numeroJugador == "7")
+        mensaje = "(move -25 9)";
+    else if (numeroJugador == "10")
         mensaje = "(move -8 20)";
     else if (numeroJugador == "8")
-        mensaje = "(move -25 -11)";
+        mensaje = "(move -25 -9)";
     else if (numeroJugador == "9")
         mensaje = "(move -0.5 0)";
-    else if (numeroJugador == "10")
+    else if (numeroJugador == "7")
         mensaje = "(move -15 0)";
     else if (numeroJugador == "11")
         mensaje = "(move -8 -20)";
@@ -314,28 +364,40 @@ string Ver(string received_message_content, string ladoJugador, string numerojug
             // Aquí se procesan los valores de "(b)" en "balon"
             if (abs(stof(balon.second)) > 15 && numerojugador != "1") //// !!!!!!!!!CAMBIO
                 return "(turn " + balon.second + ")";                 // si vemos el balon lo enfocamos
-
-            if (stoi(balon.first) >= 0.6 && stoi(balon.first) < 8)
+            if (stoi(balon.first) >= 2 && stoi(balon.first) < 15 && numerojugador == "1")
             {
-                if (numerojugador == "1")
+
+                if (ladoJugador == "l")
                 {
-                    if (36 > coordenadas.first.first || -36 < coordenadas.first.first)
+                    if (-36 < coordenadas.first.first)
                     {
                         return resultado = retornoazona(numerojugador, ladoJugador, coordenadas);
                     }
                 }
+                if (ladoJugador == "r")
+                    if (36 > coordenadas.first.first)
+                    {
+                        return resultado = retornoazona(numerojugador, ladoJugador, coordenadas);
+                    }
                 return resultado = "(dash 100 " + balon.second + ")";
             }
-            if (stoi(balon.first) < 0.6)
+            else if (stoi(balon.first) >= 0.6 && stoi(balon.first) < 8)
+            {
+
+                return resultado = "(dash 100 " + balon.second + ")";
+            }
+            if (numerojugador == "1" && stoi(balon.first) < 2)
+            {
+                if (abs(coordenadas.first.first) < 39)
+                {
+                    return tirar(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
+                }
+                return "(catch " + balon.second + ")";
+            }
+            else if (stoi(balon.first) < 0.6)
             {
                 auto decisionconbalon = decidir(received_message_content, coordenadas, numerojugador, ladoJugador, team_name);
-                ///////
-                if (numerojugador == "1") // cuando el portero tenga el balon cerca que haga un catch
-                {
-                    resultado = "(catch " + balon.second + ")";
-                    return resultado;
-                }
-                /////////
+
                 switch (decisionconbalon)
                 {
                 case TIRAR:
